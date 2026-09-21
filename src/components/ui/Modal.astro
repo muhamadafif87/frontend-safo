@@ -1,0 +1,446 @@
+---
+// Modal.astro — Login popup
+// Berbasis <dialog> native: fokus-trap, Esc close, aksesibel
+// role="dialog", aria-labelledby, aria-modal
+
+interface Props {
+  id?: string;
+}
+
+const { id = 'login-modal' } = Astro.props;
+---
+
+<!-- Trigger button (bisa dipakai dari mana saja) -->
+<button
+  class="modal-trigger"
+  type="button"
+  aria-controls={id}
+  id={`${id}-trigger`}
+  onclick={`document.getElementById('${id}').showModal()`}
+>
+  <slot name="trigger">Masuk</slot>
+</button>
+
+<!-- Dialog native -->
+<dialog
+  class="modal"
+  id={id}
+  aria-labelledby={`${id}-title`}
+  aria-modal="true"
+>
+  <div class="modal__content">
+    <!-- Header modal -->
+    <div class="modal__header">
+      <!-- Logo kecil -->
+      <div class="modal__logo">
+        <svg width="32" height="32" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <circle cx="14" cy="14" r="14" fill="var(--color-primary-700)"/>
+          <path d="M8 14c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="14" cy="16" r="2.5" fill="var(--color-accent)"/>
+          <path d="M14 18.5v2.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <button
+        class="modal__close"
+        type="button"
+        aria-label="Tutup popup login"
+        onclick={`document.getElementById('${id}').close()`}
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Judul -->
+    <h2 class="modal__title" id={`${id}-title`}>Masuk ke SAFO</h2>
+    <p class="modal__subtitle">Temukan makanan surplus di sekitarmu dengan harga hemat.</p>
+
+    <!-- Form login dummy -->
+    <form class="modal__form" onsubmit="return false;" novalidate>
+      <div class="modal__field">
+        <label class="modal__label" for={`${id}-email`}>Email</label>
+        <input
+          type="email"
+          id={`${id}-email`}
+          name="email"
+          class="modal__input"
+          placeholder="nama@email.com"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <div class="modal__field">
+        <label class="modal__label" for={`${id}-password`}>
+          Kata Sandi
+          <a href="/forgot-password" class="modal__forgot">Lupa kata sandi?</a>
+        </label>
+        <div class="modal__password-wrapper">
+          <input
+            type="password"
+            id={`${id}-password`}
+            name="password"
+            class="modal__input"
+            placeholder="Masukkan kata sandi"
+            autocomplete="current-password"
+            required
+          />
+          <button type="button" class="modal__toggle-password" aria-label="Tampilkan kata sandi">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M1.5 9C1.5 9 4 3.75 9 3.75S16.5 9 16.5 9 14 14.25 9 14.25 1.5 9 1.5 9z" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="9" cy="9" r="2.25" stroke="currentColor" stroke-width="1.5"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="modal__submit">
+        Masuk
+      </button>
+
+      <p class="modal__register">
+        Belum punya akun?
+        <a href="/register" class="modal__register-link">Daftar sekarang</a>
+      </p>
+
+      <div class="modal__divider">
+        <span>atau lanjutkan dengan</span>
+      </div>
+
+      <!-- Social login (dummy) -->
+      <div class="modal__social">
+        <button type="button" class="modal__social-btn" aria-label="Masuk dengan Google">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M17.1 9.2c0-.6-.1-1.1-.2-1.6H9v3h4.5c-.2 1-.8 1.8-1.6 2.4v2h2.6c1.5-1.4 2.4-3.4 2.4-5.8z" fill="#4285F4"/>
+            <path d="M9 18c2.2 0 4.1-.7 5.5-2l-2.6-2c-.7.5-1.7.8-2.9.8-2.2 0-4.1-1.5-4.7-3.5H1.6v2C3 16 5.8 18 9 18z" fill="#34A853"/>
+            <path d="M4.3 11.3C4.1 10.8 4 10.2 4 9.5s.1-1.3.3-1.8V5.7H1.6C1 6.8.6 8.1.6 9.5s.4 2.7 1 3.8l2.7-2z" fill="#FBBC05"/>
+            <path d="M9 3.8c1.2 0 2.3.4 3.2 1.2L14.7 2.6C13.2 1.2 11.3.4 9 .4 5.8.4 3 2.4 1.6 5.4l2.7 2C4.9 5.3 6.8 3.8 9 3.8z" fill="#EA4335"/>
+          </svg>
+          Google
+        </button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<style>
+  /* -------- Dialog native -------- */
+  .modal {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(480px, calc(100vw - var(--space-8)));
+    max-height: calc(100vh - var(--space-8));
+    background: var(--color-bg-alt);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-modal);
+    border: 1px solid var(--color-border);
+    padding: 0;
+    overflow: auto;
+  }
+
+  .modal::backdrop {
+    background: rgb(11 46 42 / 0.5);
+    backdrop-filter: blur(4px);
+  }
+
+  /* Entry animation */
+  @keyframes modal-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  .modal[open] {
+    animation: modal-in var(--motion-base) var(--easing-enter);
+  }
+
+  /* -------- Content -------- */
+  .modal__content {
+    padding: var(--space-6) var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  /* -------- Header -------- */
+  .modal__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--space-2);
+  }
+
+  .modal__logo {
+    display: flex;
+    align-items: center;
+  }
+
+  .modal__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    color: var(--color-ink-muted);
+    cursor: pointer;
+    transition: background-color var(--motion-fast), color var(--motion-fast);
+    margin: calc(-1 * var(--space-2));
+  }
+
+  .modal__close:hover {
+    background: var(--color-border);
+    color: var(--color-ink);
+  }
+
+  /* -------- Text -------- */
+  .modal__title {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-1);
+  }
+
+  .modal__subtitle {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+    margin-bottom: var(--space-2);
+    max-width: none;
+  }
+
+  /* -------- Form -------- */
+  .modal__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .modal__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .modal__label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-ink);
+  }
+
+  .modal__forgot {
+    font-weight: var(--font-weight-regular);
+    color: var(--color-primary-700);
+    font-size: var(--text-xs);
+    text-decoration: none;
+  }
+
+  .modal__forgot:hover {
+    text-decoration: underline;
+  }
+
+  .modal__input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-ink);
+    background: var(--color-bg);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition:
+      border-color var(--motion-fast) var(--easing-standard),
+      box-shadow var(--motion-fast) var(--easing-standard);
+  }
+
+  .modal__input::placeholder {
+    color: var(--color-ink-muted);
+  }
+
+  .modal__input:focus {
+    border-color: var(--color-primary-700);
+    box-shadow: 0 0 0 3px rgb(18 64 58 / 0.1);
+  }
+
+  .modal__password-wrapper {
+    position: relative;
+  }
+
+  .modal__password-wrapper .modal__input {
+    padding-right: var(--space-10);
+  }
+
+  .modal__toggle-password {
+    position: absolute;
+    right: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-ink-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-xs);
+    transition: color var(--motion-fast);
+  }
+
+  .modal__toggle-password:hover {
+    color: var(--color-ink);
+  }
+
+  .modal__submit {
+    width: 100%;
+    padding: var(--space-3) var(--space-6);
+    background: var(--color-primary-700);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition:
+      background-color var(--motion-fast) var(--easing-standard),
+      transform var(--motion-fast) var(--easing-standard);
+    min-height: 48px;
+    border: none;
+  }
+
+  .modal__submit:hover {
+    background: var(--color-primary-900);
+    transform: translateY(-1px);
+  }
+
+  .modal__register {
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+    max-width: none;
+  }
+
+  .modal__register-link {
+    color: var(--color-primary-700);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+  }
+
+  .modal__register-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Divider */
+  .modal__divider {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-ink-muted);
+    font-size: var(--text-sm);
+  }
+
+  .modal__divider::before,
+  .modal__divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+  }
+
+  /* Social login */
+  .modal__social {
+    display: flex;
+    gap: var(--space-3);
+  }
+
+  .modal__social-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-ink);
+    background: var(--color-bg-alt);
+    cursor: pointer;
+    transition:
+      background-color var(--motion-fast),
+      border-color var(--motion-fast);
+  }
+
+  .modal__social-btn:hover {
+    background: var(--color-bg);
+    border-color: var(--color-border-strong);
+  }
+
+  /* -------- Trigger button -------- */
+  .modal-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary-700);
+    border: 1.5px solid var(--color-primary-700);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    cursor: pointer;
+    transition:
+      background-color var(--motion-fast),
+      color var(--motion-fast);
+  }
+
+  .modal-trigger:hover {
+    background: var(--color-primary-100);
+  }
+</style>
+
+<script>
+  // Password visibility toggle
+  document.querySelectorAll('.modal__toggle-password').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const wrapper = btn.closest('.modal__password-wrapper');
+      const input = wrapper?.querySelector('input') as HTMLInputElement | null;
+      if (input) {
+        input.type = input.type === 'password' ? 'text' : 'password';
+        btn.setAttribute('aria-label', input.type === 'password' ? 'Tampilkan kata sandi' : 'Sembunyikan kata sandi');
+      }
+    });
+  });
+
+  // Tutup saat klik di luar dialog
+  document.querySelectorAll('dialog.modal').forEach((dialog) => {
+    dialog.addEventListener('click', (e) => {
+      const rect = dialog.getBoundingClientRect();
+      const target = e.target as Element;
+      const clickedBackdrop = (
+        e.clientX < rect.left ||
+        e.clientX > rect.right ||
+        e.clientY < rect.top ||
+        e.clientY > rect.bottom
+      );
+      if (clickedBackdrop) {
+        (dialog as HTMLDialogElement).close();
+      }
+    });
+  });
+</script>

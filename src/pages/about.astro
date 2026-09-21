@@ -1,0 +1,772 @@
+---
+// about.astro — Halaman About
+// Misi SAFO + tim (dummy) + kontak — satu halaman dengan anchor section
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import Toast from '../components/ui/Toast.astro';
+
+const team = [
+  {
+    name: 'Arga Pratama',
+    role: 'Co-Founder & CEO',
+    bio: 'Passion di bidang sustainability dan teknologi pangan. 5+ tahun pengalaman di startup teknologi.',
+    avatar: 'A',
+    color: 'var(--color-primary-100)',
+    textColor: 'var(--color-primary-700)',
+  },
+  {
+    name: 'Fika Novitasari',
+    role: 'Co-Founder & CPO',
+    bio: 'Ex-product manager di e-commerce terkemuka. Percaya teknologi bisa membantu UMKM tumbuh lebih cepat.',
+    avatar: 'F',
+    color: 'var(--color-accent-light)',
+    textColor: 'var(--color-accent)',
+  },
+  {
+    name: 'Bagas Wicaksono',
+    role: 'CTO',
+    bio: 'Full-stack engineer yang suka membangun sistem yang scalable dan mudah dipakai semua orang.',
+    avatar: 'B',
+    color: 'var(--color-cat-minum)',
+    textColor: 'var(--color-cat-minum-icon)',
+  },
+  {
+    name: 'Dewi Rachmawati',
+    role: 'Head of Partnerships',
+    bio: 'Latar belakang di UMKM development dan CSR. Jembatan antara SAFO dan komunitas UMKM kuliner.',
+    avatar: 'D',
+    color: 'var(--color-cat-camilan)',
+    textColor: 'var(--color-cat-camilan-icon)',
+  },
+];
+
+const values = [
+  {
+    label: 'Dampak Nyata',
+    desc: 'Setiap fitur yang kami bangun harus punya dampak nyata — bagi pembeli, UMKM, dan lingkungan.',
+  },
+  {
+    label: 'Jujur & Transparan',
+    desc: 'Kami tidak menyembunyikan data dampak. Semua angka di platform kami adalah data terverifikasi.',
+  },
+  {
+    label: 'UMKM Dulu',
+    desc: 'Keputusan bisnis kami selalu dimulai dengan mempertanyakan: "Bagaimana ini membantu mitra UMKM kami?"',
+  },
+  {
+    label: 'Teknologi untuk Semua',
+    desc: 'Platform yang canggih tapi mudah dipakai — bahkan oleh warung yang belum familiar dengan teknologi.',
+  },
+];
+---
+
+<BaseLayout
+  title="About SAFO — Misi, Tim, dan Kontak"
+  description="Pelajari cerita di balik SAFO, misi kami mengurangi food waste sambil memberdayakan UMKM kuliner lokal, dan tim yang membangunnya."
+>
+  <Fragment slot="header"><Header /></Fragment>
+
+  <!-- Misi section -->
+  <section class="about-mission section" id="misi" aria-labelledby="mission-title">
+    <div class="container about-mission__inner">
+      <div class="about-mission__content">
+        <p class="section-label">Tentang Kami</p>
+        <h1 class="about-mission__title" id="mission-title">
+          Makanan Baik<br/>Tidak Boleh Terbuang
+        </h1>
+        <p class="about-mission__desc">
+          SAFO lahir dari keresahan sederhana: setiap hari, jutaan porsi makanan
+          berkualitas dibuang karena tidak habis terjual. Di saat yang sama,
+          banyak orang ingin makan enak tapi harga makanan terasa mahal.
+        </p>
+        <p class="about-mission__desc">
+          Kami membangun SAFO sebagai jembatan — menghubungkan UMKM kuliner yang
+          punya surplus dengan pembeli di sekitar mereka, dengan harga yang lebih
+          hemat, dan dampak lingkungan yang nyata.
+        </p>
+
+        <!-- Stats singkat -->
+        <div class="about-mission__stats">
+          <div class="about-mission__stat">
+            <span class="about-mission__stat-num">2026</span>
+            <span class="about-mission__stat-label">Tahun berdiri</span>
+          </div>
+          <div class="about-mission__stat">
+            <span class="about-mission__stat-num">Surakarta</span>
+            <span class="about-mission__stat-label">Kota pertama</span>
+          </div>
+          <div class="about-mission__stat">
+            <span class="about-mission__stat-num">143+</span>
+            <span class="about-mission__stat-label">UMKM mitra</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-mission__image" aria-hidden="true">
+        <img
+          src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80"
+          alt="Makanan berkualitas yang diselamatkan SAFO"
+          class="about-mission__img"
+          width="540"
+          height="400"
+          fetchpriority="high"
+        />
+        <!-- Quote overlay -->
+        <blockquote class="about-mission__quote">
+          <p>"Tidak ada makanan baik yang seharusnya berakhir di tempat sampah."</p>
+          <cite>— Tim SAFO</cite>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nilai-nilai -->
+  <section class="about-values section" aria-labelledby="values-title">
+    <div class="container">
+      <h2 class="about-values__title" id="values-title">Nilai yang Kami Pegang</h2>
+      <div class="about-values__grid">
+        {values.map((val, i) => (
+          <div class="about-value-card">
+            <div class="about-value-card__num" aria-hidden="true">0{i + 1}</div>
+            <h3 class="about-value-card__label">{val.label}</h3>
+            <p class="about-value-card__desc">{val.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Tim -->
+  <section class="about-team section" id="tim" aria-labelledby="team-title">
+    <div class="container">
+      <div class="about-team__header">
+        <p class="section-label">Tim Kami</p>
+        <h2 class="about-team__title" id="team-title">
+          Orang-orang di Balik SAFO
+        </h2>
+        <p class="about-team__desc">
+          Tim kecil tapi bersemangat, berkomitmen membangun platform yang
+          benar-benar membantu UMKM dan mengurangi food waste di Indonesia.
+        </p>
+      </div>
+
+      <div class="about-team__grid">
+        {team.map((member) => (
+          <div class="about-team-card">
+            <div
+              class="about-team-card__avatar"
+              style={`background-color: ${member.color}; color: ${member.textColor};`}
+              aria-hidden="true"
+            >
+              {member.avatar}
+            </div>
+            <div class="about-team-card__info">
+              <h3 class="about-team-card__name">{member.name}</h3>
+              <p class="about-team-card__role">{member.role}</p>
+              <p class="about-team-card__bio">{member.bio}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Karier -->
+  <section class="about-career section" id="karier" aria-labelledby="career-title">
+    <div class="container about-career__inner">
+      <div class="about-career__content">
+        <p class="section-label">Karier</p>
+        <h2 class="about-career__title" id="career-title">
+          Bergabung dengan Misi Kami
+        </h2>
+        <p class="about-career__desc">
+          Kami selalu mencari orang-orang yang peduli dengan dampak sosial dan
+          lingkungan, serta ingin membangun teknologi yang bermakna.
+          Saat ini kami belum membuka lowongan terbuka, tapi feel free
+          untuk mengirim email perkenalan.
+        </p>
+        <a href="#kontak" class="about-career__link">
+          Kirim perkenalan →
+        </a>
+      </div>
+      <div class="about-career__badge" aria-hidden="true">
+        <div class="about-career__badge-inner">
+          <svg width="40" height="40" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <circle cx="14" cy="14" r="14" fill="var(--color-primary-700)"/>
+            <path d="M8 14c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="14" cy="16" r="2.5" fill="var(--color-accent)"/>
+          </svg>
+          <span>We're hiring!</span>
+          <small>Segera hadir</small>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Kontak -->
+  <section class="about-contact section" id="kontak" aria-labelledby="contact-title">
+    <div class="container about-contact__inner">
+      <div class="about-contact__content">
+        <p class="section-label">Kontak</p>
+        <h2 class="about-contact__title" id="contact-title">Hubungi Kami</h2>
+        <p class="about-contact__desc">
+          Ada pertanyaan, masukan, atau ingin berkolaborasi? Kami senang mendengar dari kamu.
+        </p>
+
+        <div class="about-contact__methods">
+          <a href="mailto:hello@safo.id" class="about-contact__method">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+            hello@safo.id
+          </a>
+          <a href="https://instagram.com/safo.id" class="about-contact__method" target="_blank" rel="noopener">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <circle cx="12" cy="12" r="5"/>
+              <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+            @safo.id
+          </a>
+          <div class="about-contact__method about-contact__method--text">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M10 1C5.58 1 2 4.58 2 9c0 4.5 3.19 8.27 7.41 9H11v-2.5c-3.11-.3-5.5-2.9-5.5-5.77C5.5 6.25 7.5 4.5 10 4.5s4.5 1.75 4.5 5.23c0 .75-.15 1.5-.4 2.15L11.5 11v2h3.08C13.1 15.68 11.67 17 10 17v2c3.42 0 6.28-2.6 6.85-6H19c.55 0 1-.45 1-1V9c0-4.42-3.58-8-10-8z" stroke="currentColor" stroke-width="1"/>
+            </svg>
+            Surakarta, Jawa Tengah
+          </div>
+        </div>
+      </div>
+
+      <!-- Form kontak dummy -->
+      <form class="about-contact__form" onsubmit="return false;" novalidate aria-label="Formulir kontak SAFO">
+        <div class="biz-form__field">
+          <label class="biz-form__label" for="contact-name">Nama</label>
+          <input type="text" id="contact-name" class="biz-form__input" placeholder="Nama kamu" required />
+        </div>
+        <div class="biz-form__field">
+          <label class="biz-form__label" for="contact-email">Email</label>
+          <input type="email" id="contact-email" class="biz-form__input" placeholder="nama@email.com" required />
+        </div>
+        <div class="biz-form__field">
+          <label class="biz-form__label" for="contact-message">Pesan</label>
+          <textarea
+            id="contact-message"
+            class="biz-form__input about-contact__textarea"
+            placeholder="Ceritakan keperluan atau pesanmu..."
+            rows="4"
+            required
+          ></textarea>
+        </div>
+        <button type="submit" class="biz-form__submit" id="contact-submit">
+          Kirim Pesan
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <Toast />
+  <Fragment slot="footer"><Footer /></Fragment>
+</BaseLayout>
+
+<style>
+  /* -------- Mission -------- */
+  .about-mission { background: var(--color-bg); }
+
+  .about-mission__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+    align-items: center;
+  }
+
+  @media (min-width: 1024px) {
+    .about-mission__inner { grid-template-columns: 1fr 1fr; }
+  }
+
+  .about-mission__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .about-mission__title {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+  }
+
+  .about-mission__desc {
+    font-size: var(--text-base);
+    color: var(--color-ink-muted);
+    line-height: var(--leading-loose);
+    max-width: 52ch;
+  }
+
+  .about-mission__stats {
+    display: flex;
+    gap: var(--space-8);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+
+  .about-mission__stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .about-mission__stat-num {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-700);
+    line-height: 1;
+  }
+
+  .about-mission__stat-label {
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+  }
+
+  .about-mission__image {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .about-mission__img {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+  }
+
+  .about-mission__quote {
+    position: absolute;
+    bottom: var(--space-4);
+    left: 0;
+    right: var(--space-4);
+    background: rgb(11 46 42 / 0.85);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-md);
+    max-width: 360px;
+  }
+
+  .about-mission__quote p {
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-snug);
+    color: #fff;
+    max-width: none;
+  }
+
+  .about-mission__quote cite {
+    font-size: var(--text-xs);
+    color: rgb(255 255 255 / 0.6);
+    font-style: normal;
+    margin-top: var(--space-2);
+    display: block;
+  }
+
+  /* -------- Values -------- */
+  .about-values {
+    background: var(--color-primary-900);
+    color: #fff;
+  }
+
+  .about-values__title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-bold);
+    color: #fff;
+    letter-spacing: var(--tracking-tight);
+    margin-bottom: var(--space-10);
+  }
+
+  .about-values__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 600px) {
+    .about-values__grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  .about-value-card {
+    padding: var(--space-6);
+    background: rgb(255 255 255 / 0.05);
+    border: 1px solid rgb(255 255 255 / 0.08);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .about-value-card__num {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+    opacity: 0.4;
+    line-height: 1;
+  }
+
+  .about-value-card__label {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-bold);
+    color: #fff;
+    line-height: var(--leading-snug);
+  }
+
+  .about-value-card__desc {
+    font-size: var(--text-sm);
+    color: rgb(255 255 255 / 0.6);
+    line-height: var(--leading-normal);
+    max-width: none;
+  }
+
+  /* -------- Team -------- */
+  .about-team {
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .about-team__header {
+    margin-bottom: var(--space-10);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .about-team__title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+  }
+
+  .about-team__desc {
+    font-size: var(--text-base);
+    color: var(--color-ink-muted);
+    line-height: var(--leading-loose);
+    max-width: 56ch;
+  }
+
+  .about-team__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 600px) {
+    .about-team__grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (min-width: 1024px) {
+    .about-team__grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .about-team-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    transition: box-shadow var(--motion-base), border-color var(--motion-base);
+  }
+
+  .about-team-card:hover {
+    box-shadow: var(--shadow-interactive);
+    border-color: var(--color-border-strong);
+  }
+
+  .about-team-card__avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-bold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .about-team-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .about-team-card__name {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+    line-height: var(--leading-snug);
+  }
+
+  .about-team-card__role {
+    font-size: var(--text-sm);
+    color: var(--color-primary-700);
+    font-weight: var(--font-weight-semibold);
+    max-width: none;
+  }
+
+  .about-team-card__bio {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+    line-height: var(--leading-normal);
+    max-width: none;
+    margin-top: var(--space-1);
+  }
+
+  /* -------- Career -------- */
+  .about-career {
+    background: var(--color-bg-alt);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .about-career__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    align-items: flex-start;
+  }
+
+  @media (min-width: 768px) {
+    .about-career__inner {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .about-career__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    max-width: 560px;
+  }
+
+  .about-career__title {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+  }
+
+  .about-career__desc {
+    font-size: var(--text-base);
+    color: var(--color-ink-muted);
+    line-height: var(--leading-loose);
+    max-width: 52ch;
+  }
+
+  .about-career__link {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary-700);
+    text-decoration: none;
+    transition: color var(--motion-fast);
+  }
+
+  .about-career__link:hover {
+    color: var(--color-primary-900);
+    text-decoration: underline;
+  }
+
+  .about-career__badge {
+    flex-shrink: 0;
+  }
+
+  .about-career__badge-inner {
+    background: var(--color-primary-100);
+    border: 2px dashed var(--color-primary-500);
+    border-radius: var(--radius-md);
+    padding: var(--space-6) var(--space-8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    text-align: center;
+    color: var(--color-primary-700);
+  }
+
+  .about-career__badge-inner span {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .about-career__badge-inner small {
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+  }
+
+  /* -------- Contact -------- */
+  .about-contact {
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .about-contact__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+    align-items: start;
+  }
+
+  @media (min-width: 1024px) {
+    .about-contact__inner { grid-template-columns: 1fr 1.5fr; }
+  }
+
+  .about-contact__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .about-contact__title {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  .about-contact__desc {
+    font-size: var(--text-base);
+    color: var(--color-ink-muted);
+    line-height: var(--leading-loose);
+    max-width: 40ch;
+  }
+
+  .about-contact__methods {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .about-contact__method {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--text-base);
+    color: var(--color-ink);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    transition: color var(--motion-fast);
+  }
+
+  .about-contact__method:hover {
+    color: var(--color-primary-700);
+  }
+
+  .about-contact__method--text {
+    cursor: default;
+    color: var(--color-ink-muted);
+  }
+
+  .about-contact__method--text:hover {
+    color: var(--color-ink-muted);
+  }
+
+  .about-contact__form {
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .about-contact__textarea {
+    resize: vertical;
+    min-height: 120px;
+    font-family: var(--font-body);
+    line-height: var(--leading-normal);
+  }
+
+  /* Reuse biz-form styles */
+  .biz-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .biz-form__label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-ink);
+  }
+
+  .biz-form__input {
+    padding: var(--space-3) var(--space-4);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    color: var(--color-ink);
+    background: var(--color-bg);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: border-color var(--motion-fast), box-shadow var(--motion-fast);
+    width: 100%;
+  }
+
+  .biz-form__input::placeholder { color: var(--color-ink-muted); }
+  .biz-form__input:focus {
+    border-color: var(--color-primary-700);
+    box-shadow: 0 0 0 3px rgb(18 64 58 / 0.1);
+  }
+
+  .biz-form__submit {
+    padding: var(--space-3) var(--space-6);
+    background: var(--color-primary-700);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    min-height: 48px;
+    border: none;
+    transition: background-color var(--motion-fast), transform var(--motion-fast);
+  }
+
+  .biz-form__submit:hover {
+    background: var(--color-primary-900);
+    transform: translateY(-1px);
+  }
+</style>
+
+<script>
+  // Kontak form dummy
+  document.getElementById('contact-submit')?.addEventListener('click', () => {
+    const name = (document.getElementById('contact-name') as HTMLInputElement)?.value;
+    if (name) {
+      (window as any).showToast?.(`Pesan dari ${name} berhasil terkirim! Kami akan membalasnya segera.`, 'success', 5000);
+    }
+  });
+</script>

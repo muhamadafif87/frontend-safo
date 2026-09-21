@@ -1,0 +1,624 @@
+---
+// Header.astro — Navigasi utama SAFO
+// Nav links, dropdown About (desktop), hamburger + drawer (mobile)
+
+const navLinks = [
+  { href: '/food-nearby', label: 'Food Nearby', id: 'food-nearby' },
+  { href: '/how-it-works', label: 'How It Works', id: 'how-it-works' },
+  { href: '/impact', label: 'Impact', id: 'impact' },
+  { href: '/for-business', label: 'For Business', id: 'for-business' },
+];
+
+const aboutLinks = [
+  { href: '/about#misi', label: 'Misi Kami' },
+  { href: '/about#tim', label: 'Tim' },
+  { href: '/about#karier', label: 'Karier' },
+  { href: '/about#kontak', label: 'Kontak' },
+];
+
+const currentPath = Astro.url.pathname;
+
+function isActive(href: string) {
+  if (href === '/food-nearby' && currentPath === '/') return true;
+  return currentPath.startsWith(href);
+}
+---
+
+<header class="header" role="banner">
+  <div class="container header__inner">
+    <!-- Logo -->
+    <a href="/" class="header__logo" aria-label="SAFO — Kembali ke halaman utama">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="14" cy="14" r="14" fill="var(--color-primary-700)"/>
+        <path d="M8 14c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="14" cy="16" r="2.5" fill="var(--color-accent)"/>
+        <path d="M14 18.5v2.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span class="header__logo-text">SAFO</span>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="header__nav" aria-label="Navigasi utama">
+      <ul class="header__nav-list" role="list">
+        {navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class={`header__nav-link ${isActive(link.href) ? 'is-active' : ''}`}
+              aria-current={isActive(link.href) ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+
+        <!-- About dropdown -->
+        <li class="header__nav-item--dropdown">
+          <button
+            class={`header__nav-link header__dropdown-trigger ${isActive('/about') ? 'is-active' : ''}`}
+            aria-expanded="false"
+            aria-haspopup="true"
+            id="about-trigger"
+          >
+            About
+            <svg class="header__dropdown-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+
+          <div class="header__dropdown" role="menu" aria-labelledby="about-trigger" id="about-dropdown">
+            <ul class="header__dropdown-list" role="list">
+              {aboutLinks.map((link) => (
+                <li>
+                  <a href={link.href} class="header__dropdown-link" role="menuitem">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Right actions -->
+    <div class="header__actions">
+      <button class="header__search-btn" aria-label="Cari makanan">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <a href="/" class="header__cta-btn" aria-label="Download aplikasi SAFO">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 2v8M8 10l-2.5-2.5M8 10l2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Download App
+      </a>
+
+      <!-- Hamburger (mobile only) -->
+      <button
+        class="header__hamburger"
+        aria-label="Buka menu navigasi"
+        aria-expanded="false"
+        aria-controls="mobile-drawer"
+        id="hamburger-btn"
+      >
+        <span class="header__hamburger-bar"></span>
+        <span class="header__hamburger-bar"></span>
+        <span class="header__hamburger-bar"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer -->
+  <div
+    class="header__drawer"
+    id="mobile-drawer"
+    aria-hidden="true"
+    role="dialog"
+    aria-label="Menu navigasi"
+    aria-modal="true"
+  >
+    <nav aria-label="Navigasi mobile">
+      <ul class="header__drawer-list" role="list">
+        {navLinks.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class={`header__drawer-link ${isActive(link.href) ? 'is-active' : ''}`}
+              aria-current={isActive(link.href) ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+
+        <!-- About accordion (mobile) -->
+        <li class="header__drawer-accordion">
+          <button
+            class="header__drawer-link header__drawer-accordion-trigger"
+            aria-expanded="false"
+            id="mobile-about-trigger"
+          >
+            About
+            <svg class="header__dropdown-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <ul class="header__drawer-submenu" id="mobile-about-submenu" role="list">
+            {aboutLinks.map((link) => (
+              <li>
+                <a href={link.href} class="header__drawer-sublink">
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </li>
+      </ul>
+
+      <div class="header__drawer-footer">
+        <a href="/" class="header__cta-btn header__cta-btn--full">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 2v8M8 10l-2.5-2.5M8 10l2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Download App
+        </a>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Overlay backdrop (mobile) -->
+  <div class="header__overlay" id="drawer-overlay" aria-hidden="true"></div>
+</header>
+
+<style>
+  /* -------- Header container -------- */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-bg-alt);
+    border-bottom: 1px solid var(--color-border);
+    height: var(--nav-height);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+    height: 100%;
+  }
+
+  /* -------- Logo -------- */
+  .header__logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+    text-decoration: none;
+  }
+
+  .header__logo-text {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-700);
+    letter-spacing: var(--tracking-tight);
+  }
+
+  /* -------- Desktop Nav -------- */
+  .header__nav {
+    flex: 1;
+    display: none;
+  }
+
+  @media (min-width: 1024px) {
+    .header__nav {
+      display: block;
+    }
+  }
+
+  .header__nav-list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    list-style: none;
+  }
+
+  .header__nav-link {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-ink-muted);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    cursor: pointer;
+    transition:
+      color var(--motion-fast) var(--easing-standard),
+      background-color var(--motion-fast) var(--easing-standard);
+    position: relative;
+  }
+
+  .header__nav-link:hover {
+    color: var(--color-primary-700);
+    background-color: var(--color-primary-100);
+  }
+
+  .header__nav-link.is-active {
+    color: var(--color-primary-700);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* Underline aktif */
+  .header__nav-link.is-active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: var(--space-3);
+    right: var(--space-3);
+    height: 2px;
+    background: var(--color-primary-700);
+    border-radius: var(--radius-pill);
+  }
+
+  /* -------- Dropdown About -------- */
+  .header__nav-item--dropdown {
+    position: relative;
+  }
+
+  .header__dropdown-icon {
+    transition: transform var(--motion-fast) var(--easing-standard);
+  }
+
+  .header__dropdown-trigger[aria-expanded="true"] .header__dropdown-icon {
+    transform: rotate(180deg);
+  }
+
+  .header__dropdown {
+    position: absolute;
+    top: calc(100% + var(--space-2));
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 160px;
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-interactive);
+    padding: var(--space-2);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(-8px);
+    transition:
+      opacity var(--motion-fast) var(--easing-standard),
+      transform var(--motion-fast) var(--easing-standard),
+      visibility var(--motion-fast) var(--easing-standard);
+    z-index: 10;
+  }
+
+  .header__dropdown.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .header__dropdown-list {
+    list-style: none;
+  }
+
+  .header__dropdown-link {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--color-ink);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: background-color var(--motion-fast) var(--easing-standard);
+  }
+
+  .header__dropdown-link:hover {
+    background: var(--color-primary-100);
+    color: var(--color-primary-700);
+  }
+
+  /* -------- Right actions -------- */
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-left: auto;
+  }
+
+  .header__search-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+    color: var(--color-ink-muted);
+    cursor: pointer;
+    transition: color var(--motion-fast), background-color var(--motion-fast);
+  }
+
+  @media (min-width: 768px) {
+    .header__search-btn {
+      display: flex;
+    }
+  }
+
+  .header__search-btn:hover {
+    color: var(--color-primary-700);
+    background: var(--color-primary-100);
+  }
+
+  /* CTA button */
+  .header__cta-btn {
+    display: none;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-primary-700);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background-color var(--motion-fast) var(--easing-standard),
+      transform var(--motion-fast) var(--easing-standard);
+  }
+
+  @media (min-width: 768px) {
+    .header__cta-btn {
+      display: flex;
+    }
+  }
+
+  .header__cta-btn:hover {
+    background: var(--color-primary-900);
+    transform: translateY(-1px);
+  }
+
+  .header__cta-btn--full {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* -------- Hamburger -------- */
+  .header__hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    padding: var(--space-2);
+    border-radius: var(--radius-sm);
+    transition: background-color var(--motion-fast);
+  }
+
+  @media (min-width: 1024px) {
+    .header__hamburger {
+      display: none;
+    }
+  }
+
+  .header__hamburger:hover {
+    background: var(--color-primary-100);
+  }
+
+  .header__hamburger-bar {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--color-ink);
+    border-radius: var(--radius-pill);
+    transition: transform var(--motion-base) var(--easing-standard),
+                opacity var(--motion-base) var(--easing-standard);
+    transform-origin: center;
+  }
+
+  /* Hamburger → X saat open */
+  .header__hamburger[aria-expanded="true"] .header__hamburger-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .header__hamburger[aria-expanded="true"] .header__hamburger-bar:nth-child(2) {
+    opacity: 0;
+  }
+  .header__hamburger[aria-expanded="true"] .header__hamburger-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  /* -------- Mobile Drawer -------- */
+  .header__drawer {
+    position: fixed;
+    top: var(--nav-height);
+    right: 0;
+    bottom: 0;
+    width: min(320px, 85vw);
+    background: var(--color-bg-alt);
+    border-left: 1px solid var(--color-border);
+    overflow-y: auto;
+    padding: var(--space-6);
+    z-index: 99;
+    transform: translateX(100%);
+    transition: transform var(--motion-slow) var(--easing-enter);
+  }
+
+  .header__drawer.is-open {
+    transform: translateX(0);
+  }
+
+  .header__drawer-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .header__drawer-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-ink);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: background-color var(--motion-fast);
+    cursor: pointer;
+  }
+
+  .header__drawer-link:hover,
+  .header__drawer-link.is-active {
+    background: var(--color-primary-100);
+    color: var(--color-primary-700);
+  }
+
+  /* Accordion About mobile */
+  .header__drawer-submenu {
+    list-style: none;
+    display: none;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding-left: var(--space-4);
+    margin-top: var(--space-1);
+  }
+
+  .header__drawer-submenu.is-open {
+    display: flex;
+  }
+
+  .header__drawer-sublink {
+    display: block;
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: color var(--motion-fast), background-color var(--motion-fast);
+  }
+
+  .header__drawer-sublink:hover {
+    color: var(--color-primary-700);
+    background: var(--color-primary-100);
+  }
+
+  .header__drawer-footer {
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* -------- Overlay backdrop -------- */
+  .header__overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    top: var(--nav-height);
+    background: rgb(0 0 0 / 0.3);
+    z-index: 98;
+  }
+
+  .header__overlay.is-open {
+    display: block;
+  }
+</style>
+
+<script>
+  // ---- Dropdown "About" (desktop) ----
+  const trigger = document.getElementById('about-trigger');
+  const dropdown = document.getElementById('about-dropdown');
+
+  if (trigger && dropdown) {
+    trigger.addEventListener('click', () => {
+      const isOpen = trigger.getAttribute('aria-expanded') === 'true';
+      trigger.setAttribute('aria-expanded', String(!isOpen));
+      dropdown.classList.toggle('is-open', !isOpen);
+    });
+
+    // Tutup saat klik di luar
+    document.addEventListener('click', (e) => {
+      if (!trigger.contains(e.target as Node) && !dropdown.contains(e.target as Node)) {
+        trigger.setAttribute('aria-expanded', 'false');
+        dropdown.classList.remove('is-open');
+      }
+    });
+
+    // Tutup saat Esc
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        trigger.setAttribute('aria-expanded', 'false');
+        dropdown.classList.remove('is-open');
+        trigger.focus();
+      }
+    });
+  }
+
+  // ---- Hamburger + Mobile Drawer ----
+  const hamburger = document.getElementById('hamburger-btn');
+  const drawer = document.getElementById('mobile-drawer');
+  const overlay = document.getElementById('drawer-overlay');
+
+  function openDrawer() {
+    hamburger?.setAttribute('aria-expanded', 'true');
+    hamburger?.setAttribute('aria-label', 'Tutup menu navigasi');
+    drawer?.classList.add('is-open');
+    drawer?.setAttribute('aria-hidden', 'false');
+    overlay?.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeDrawer() {
+    hamburger?.setAttribute('aria-expanded', 'false');
+    hamburger?.setAttribute('aria-label', 'Buka menu navigasi');
+    drawer?.classList.remove('is-open');
+    drawer?.setAttribute('aria-hidden', 'true');
+    overlay?.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  hamburger?.addEventListener('click', () => {
+    const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
+    isOpen ? closeDrawer() : openDrawer();
+  });
+
+  overlay?.addEventListener('click', closeDrawer);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer?.classList.contains('is-open')) {
+      closeDrawer();
+      hamburger?.focus();
+    }
+  });
+
+  // ---- Accordion About (mobile) ----
+  const mobileAboutTrigger = document.getElementById('mobile-about-trigger');
+  const mobileAboutSubmenu = document.getElementById('mobile-about-submenu');
+
+  mobileAboutTrigger?.addEventListener('click', () => {
+    const isOpen = mobileAboutTrigger.getAttribute('aria-expanded') === 'true';
+    mobileAboutTrigger.setAttribute('aria-expanded', String(!isOpen));
+    mobileAboutSubmenu?.classList.toggle('is-open', !isOpen);
+
+    // Putar ikon chevron
+    const icon = mobileAboutTrigger.querySelector('.header__dropdown-icon') as SVGElement;
+    if (icon) {
+      icon.style.transform = !isOpen ? 'rotate(180deg)' : 'rotate(0)';
+    }
+  });
+</script>

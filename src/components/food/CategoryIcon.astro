@@ -1,0 +1,164 @@
+---
+// CategoryIcon.astro — Ikon kategori makanan
+// Warna lingkaran dibedakan per kategori — bukan satu warna seragam
+
+interface Props {
+  id: string;
+  label: string;
+  description?: string;
+  bgColor?: string;
+  iconColor?: string;
+  icon: 'bowl' | 'bread' | 'drink' | 'snack' | 'other';
+  selected?: boolean;
+  href?: string;
+}
+
+const {
+  id,
+  label,
+  description,
+  bgColor = 'var(--color-cat-berat)',
+  iconColor = 'var(--color-cat-berat-icon)',
+  icon,
+  selected = false,
+  href,
+} = Astro.props;
+
+// SVG paths per kategori — custom, bukan ikon generik
+const icons: Record<string, string> = {
+  bowl: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M5 13h18c0 5-4 9-9 9s-9-4-9-9z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M9 13V10a5 5 0 0110 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M8 22h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`,
+  bread: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect x="4" y="12" width="20" height="11" rx="3" stroke="currentColor" stroke-width="1.5"/>
+    <path d="M8 12c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="currentColor" stroke-width="1.5"/>
+    <path d="M10 16h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`,
+  drink: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M8 6h12l-2 16H10L8 6z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M6 6h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M11 11.5c1 1 5 1 6 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M17 6l2-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`,
+  snack: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="14" cy="14" r="8" stroke="currentColor" stroke-width="1.5"/>
+    <circle cx="11" cy="12" r="1.5" fill="currentColor"/>
+    <circle cx="17" cy="12" r="1.5" fill="currentColor"/>
+    <circle cx="14" cy="17" r="1.5" fill="currentColor"/>
+    <path d="M6 14h2M20 14h2M14 6v2M14 20v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`,
+  other: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M14 5c-2 3-6 5-6 9a6 6 0 0012 0c0-4-4-6-6-9z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M10 18c0 2 1.5 3 4 3s4-1 4-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`,
+};
+
+const tag = href ? 'a' : 'button';
+---
+
+{tag === 'a' ? (
+  <a
+    href={href}
+    class={`category-icon ${selected ? 'category-icon--selected' : ''}`}
+    data-category={id}
+    aria-label={`Kategori ${label}${description ? `: ${description}` : ''}`}
+    aria-pressed={selected ? 'true' : 'false'}
+  >
+    <span
+      class="category-icon__circle"
+      style={`background-color: ${bgColor}; color: ${iconColor};`}
+    >
+      <Fragment set:html={icons[icon] ?? icons.other} />
+    </span>
+    <span class="category-icon__label">{label}</span>
+    {description && <span class="category-icon__desc">{description}</span>}
+  </a>
+) : (
+  <button
+    type="button"
+    class={`category-icon ${selected ? 'category-icon--selected' : ''}`}
+    data-category={id}
+    aria-label={`Filter kategori ${label}${description ? `: ${description}` : ''}`}
+    aria-pressed={selected ? 'true' : 'false'}
+  >
+    <span
+      class="category-icon__circle"
+      style={`background-color: ${bgColor}; color: ${iconColor};`}
+    >
+      <Fragment set:html={icons[icon] ?? icons.other} />
+    </span>
+    <span class="category-icon__label">{label}</span>
+    {description && <span class="category-icon__desc">{description}</span>}
+  </button>
+)}
+
+<style>
+  .category-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    text-align: center;
+    cursor: pointer;
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: var(--space-2);
+    border-radius: var(--radius-md);
+    transition: transform var(--motion-fast) var(--easing-standard);
+    min-width: 72px;
+  }
+
+  .category-icon:hover {
+    transform: translateY(-2px);
+  }
+
+  .category-icon:focus-visible {
+    outline: 2px solid var(--color-primary-700);
+    outline-offset: 2px;
+  }
+
+  /* Lingkaran ikon — warna berbeda per kategori */
+  .category-icon__circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    transition:
+      transform var(--motion-fast) var(--easing-standard),
+      box-shadow var(--motion-fast) var(--easing-standard);
+  }
+
+  .category-icon:hover .category-icon__circle {
+    box-shadow: var(--shadow-interactive);
+    transform: scale(1.05);
+  }
+
+  .category-icon--selected .category-icon__circle {
+    box-shadow: var(--shadow-interactive);
+    transform: scale(1.05);
+  }
+
+  .category-icon__label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-ink);
+    line-height: var(--leading-tight);
+  }
+
+  .category-icon--selected .category-icon__label {
+    color: var(--color-primary-700);
+  }
+
+  .category-icon__desc {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+    line-height: var(--leading-normal);
+  }
+</style>

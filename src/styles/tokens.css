@@ -1,0 +1,159 @@
+/* ============================================================
+   SAFO Design Tokens
+   Semua custom property CSS — sumber tunggal kebenaran desain.
+   Jangan override di luar file ini kecuali ada kebutuhan khusus.
+   ============================================================ */
+
+:root {
+  /* --------------------------------------------------
+     WARNA
+     -------------------------------------------------- */
+
+  /* Primary — hijau tua jadi jangkar */
+  --color-primary-900: #0b2e2a; /* footer, headline gelap, section dark */
+  --color-primary-700: #12403a; /* nav, tombol utama, ikon aktif */
+  --color-primary-500: #2f7a5c; /* ikon impact/leaf, status sukses */
+  --color-primary-100: #d4ede3; /* background tipis, highlight ringan */
+
+  /* Accent — coral & pink, dipakai sedikit dan sengaja */
+  --color-accent:        #f2704f; /* aksen headline "Close to You", CTA sekunder */
+  --color-accent-strong: #ef4d66; /* badge diskon, elemen urgensi */
+  --color-accent-light:  #fff0ed; /* background ringan untuk state aksen */
+
+  /* Neutral */
+  --color-bg:      #f6f1e4; /* kanvas halaman utama (krem) */
+  --color-bg-alt:  #ffffff; /* kartu, form, modal */
+  --color-ink:     #1b2b27; /* teks body utama */
+  --color-ink-muted: #5c6b67; /* teks sekunder, caption, placeholder */
+  --color-border:  #e4dcc8; /* border tipis di atas krem */
+  --color-border-strong: #c8bfa8; /* border aktif/focus */
+
+  /* Kategori — warna lingkaran per kategori (tipis, tidak monoton) */
+  --color-cat-berat:   #e8f4ec; /* Makanan Berat — hijau muda */
+  --color-cat-roti:    #fef3e2; /* Roti & Kue — kuning hangat */
+  --color-cat-minum:   #e3f0f9; /* Minuman — biru muda */
+  --color-cat-camilan: #fde8ee; /* Camilan — pink muda */
+  --color-cat-lain:    #ede8f5; /* Lainnya — ungu muda */
+
+  /* Icon warna per kategori */
+  --color-cat-berat-icon:   #2f7a5c;
+  --color-cat-roti-icon:    #c47f1a;
+  --color-cat-minum-icon:   #2271b3;
+  --color-cat-camilan-icon: #d44067;
+  --color-cat-lain-icon:    #6b4fa0;
+
+  /* --------------------------------------------------
+     TIPOGRAFI
+     -------------------------------------------------- */
+
+  /* Font families — 2 peran yang berbeda, jangan tukar posisi */
+  --font-display: 'Fredoka', system-ui, sans-serif;    /* heading, display */
+  --font-body:    'Plus Jakarta Sans', system-ui, sans-serif; /* body, UI, caption */
+
+  /* Font weights */
+  --font-weight-regular:   400;
+  --font-weight-medium:    500;
+  --font-weight-semibold:  600;
+  --font-weight-bold:      700;
+
+  /* Type scale — mobile base, desktop via clamp */
+  --text-xs:      0.75rem;   /* 12px — caption kecil */
+  --text-sm:      0.875rem;  /* 14px — caption, label kecil */
+  --text-base:    1rem;      /* 16px — body standar */
+  --text-lg:      1.25rem;   /* 20px — H3, subheading */
+  --text-xl:      1.5625rem; /* 25px — H2 */
+  --text-2xl:     1.9375rem; /* 31px — H1 mobile */
+  --text-display: clamp(2rem, 5vw, 3.5rem); /* Display — hero headline */
+
+  /* Line heights */
+  --leading-tight:  1.15;
+  --leading-snug:   1.3;
+  --leading-normal: 1.5;
+  --leading-loose:  1.7;
+
+  /* Letter spacing — TIDAK ada tracked-caps untuk label */
+  --tracking-normal: 0;
+  --tracking-tight:  -0.02em;
+
+  /* Max lebar baris body */
+  --measure: 65ch;
+
+  /* --------------------------------------------------
+     SPACING — skala 4px
+     -------------------------------------------------- */
+  --space-1:  0.25rem;  /* 4px */
+  --space-2:  0.5rem;   /* 8px */
+  --space-3:  0.75rem;  /* 12px */
+  --space-4:  1rem;     /* 16px */
+  --space-5:  1.25rem;  /* 20px */
+  --space-6:  1.5rem;   /* 24px */
+  --space-8:  2rem;     /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-14: 3.5rem;   /* 56px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+
+  /* --------------------------------------------------
+     RADIUS — dibedakan per peran, bukan satu nilai semua
+     -------------------------------------------------- */
+  --radius-xs:   4px;   /* badge kecil, chip kompak */
+  --radius-sm:   8px;   /* input, chip filter */
+  --radius-md:   16px;  /* kartu makanan */
+  --radius-lg:   24px;  /* panel besar, modal */
+  --radius-pill: 999px; /* tombol, badge lingkaran */
+
+  /* --------------------------------------------------
+     SHADOW — 2 varian selektif, bukan di semua kartu
+     -------------------------------------------------- */
+  /* Shadow rest — nyaris tidak terlihat, untuk elevasi peta/panel */
+  --shadow-rest: 0 1px 3px 0 rgb(11 46 42 / 0.06),
+                 0 1px 2px -1px rgb(11 46 42 / 0.04);
+
+  /* Shadow interactive — muncul HANYA saat hover/focus */
+  --shadow-interactive: 0 8px 24px -4px rgb(11 46 42 / 0.14),
+                        0 4px 8px -2px rgb(11 46 42 / 0.08);
+
+  /* Shadow modal — untuk <dialog> overlay */
+  --shadow-modal: 0 20px 60px -8px rgb(11 46 42 / 0.2);
+
+  /* --------------------------------------------------
+     MOTION
+     -------------------------------------------------- */
+  --motion-fast:   120ms;
+  --motion-base:   200ms;
+  --motion-slow:   300ms;
+  --motion-reveal: 400ms; /* satu momen utama: hero product shot */
+  --easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-enter:    cubic-bezier(0, 0, 0.2, 1);
+  --easing-exit:     cubic-bezier(0.4, 0, 1, 1);
+
+  /* --------------------------------------------------
+     LAYOUT
+     -------------------------------------------------- */
+  --container-max:   1280px;
+  --container-inner: 1140px;
+  --nav-height:      72px;
+
+  /* Breakpoints (sebagai referensi, pakai di @media langsung) */
+  /* xs:  480px  — mobile besar */
+  /* sm:  768px  — tablet       */
+  /* md:  1024px — desktop      */
+  /* lg:  1280px — wide         */
+}
+
+/* --------------------------------------------------
+   prefers-reduced-motion — wajib dihormati
+   Semua transisi non-esensial dimatikan.
+   -------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

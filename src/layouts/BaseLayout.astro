@@ -1,0 +1,110 @@
+---
+// BaseLayout.astro — Layout dasar semua halaman SAFO
+// Menangani: <head>, font loading, CSS global, slot Header/Footer
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = 'SAFO — Good Food, Close to You',
+  description = 'Temukan makanan surplus dari UMKM di sekitar lokasimu. Nikmati makanan enak dengan harga lebih hemat, sambil membantu mengurangi food waste.',
+  ogImage = '/og-image.jpg',
+  noindex = false,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://safo.id');
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:site_name" content="SAFO" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Google Fonts — preconnect untuk performa -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--
+      Fredoka: display/heading — rounded-geometric, hangat
+      Plus Jakarta Sans: body & UI — humanis, mudah dibaca di Indonesia
+    -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Styles — urutan penting: tokens dulu, lalu reset, lalu global -->
+    <style is:global>
+      @import '../styles/tokens.css';
+      @import '../styles/reset.css';
+      @import '../styles/global.css';
+    </style>
+  </head>
+
+  <body>
+    <!-- Skip to main content — aksesibilitas keyboard -->
+    <a href="#main-content" class="skip-link">Langsung ke konten utama</a>
+
+    <slot name="header" />
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <slot name="footer" />
+  </body>
+</html>
+
+<style is:global>
+  /* Skip link — hanya terlihat saat focus (aksesibilitas) */
+  .skip-link {
+    position: fixed;
+    top: var(--space-4);
+    left: var(--space-4);
+    z-index: 9999;
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-primary-700);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-sm);
+    transform: translateY(-100px);
+    transition: transform var(--motion-fast) var(--easing-enter);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+</style>

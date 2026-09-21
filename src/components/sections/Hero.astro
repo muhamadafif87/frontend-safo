@@ -1,0 +1,393 @@
+---
+// Hero.astro — Section hero Food Nearby
+// Desktop: headline kiri + product shot kanan
+// Mobile: foto lebih kecil di atas, headline + search full-width di bawah
+// Animasi utama: product shot reveal scale+fade, 400ms, sekali saja
+
+import Input from '../ui/Input.astro';
+import Chip from '../ui/Chip.astro';
+
+const chips = [
+  { label: 'Semua', value: 'all', selected: true },
+  { label: '< 5K', value: 'under-5k', selected: false },
+  { label: '< 10K', value: 'under-10k', selected: false },
+  { label: 'Terdekat', value: 'nearest', selected: false },
+  { label: 'Kategori ⌄', value: 'category', selected: false },
+];
+---
+
+<section class="hero" aria-label="Temukan makanan surplus di sekitarmu">
+  <div class="container hero__inner">
+
+    <!-- Kolom kiri: headline + search -->
+    <div class="hero__content">
+      <!-- Section label — bukan tracked caps, huruf normal + warna aksen -->
+      <p class="section-label hero__label">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M7 1C4.24 1 2 3.24 2 6c0 4.125 5 8.25 5 8.25S12 10.125 12 6C12 3.24 9.76 1 7 1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+          <circle cx="7" cy="6" r="1.75" stroke="currentColor" stroke-width="1.2"/>
+        </svg>
+        Food Nearby
+      </p>
+
+      <!-- Headline -->
+      <h1 class="hero__headline">
+        Good Food,
+        <br />
+        <span class="hero__headline-accent">Close to You</span>
+      </h1>
+
+      <!-- Deskripsi -->
+      <p class="hero__desc">
+        Temukan makanan surplus dari UMKM di sekitar lokasimu.
+        Nikmati makanan enak dengan harga lebih hemat, sambil membantu
+        mengurangi food waste.
+      </p>
+
+      <!-- Search bar -->
+      <div class="hero__search">
+        <Input
+          placeholder="Cari lokasi (contoh: UNS, Solo)"
+          id="hero-search"
+          name="location"
+          aria-label="Cari lokasi untuk menemukan makanan surplus di sekitarmu"
+        />
+      </div>
+
+      <!-- Filter chips -->
+      <div class="hero__chips" role="group" aria-label="Filter makanan">
+        {chips.map((chip) => (
+          <Chip
+            label={chip.label}
+            value={chip.value}
+            selected={chip.selected}
+            data-filter="hero"
+          />
+        ))}
+      </div>
+    </div>
+
+    <!-- Kolom kanan: product shot -->
+    <div class="hero__media" aria-hidden="true">
+      <!-- Dekorasi background blob -->
+      <div class="hero__blob" aria-hidden="true"></div>
+
+      <!-- Gambar produk — elemen paling "berani" di halaman -->
+      <div class="hero__product-wrap" id="hero-product">
+        <!-- Stiker diskon -->
+        <div class="hero__sticker">
+          <span class="hero__sticker-line1">Diskon</span>
+          <span class="hero__sticker-line2">hingga</span>
+          <span class="hero__sticker-pct">70%</span>
+        </div>
+
+        <!-- Foto produk utama -->
+        <img
+          src="https://images.unsplash.com/photo-1512058556646-c4da40fba323?w=600&q=80"
+          alt="Nasi kotak SAFO — makanan surplus berkualitas dengan harga lebih hemat"
+          class="hero__product-img"
+          width="520"
+          height="420"
+          fetchpriority="high"
+        />
+
+        <!-- Dekorasi daun -->
+        <svg class="hero__leaf hero__leaf--1" viewBox="0 0 60 80" fill="none" aria-hidden="true">
+          <path d="M30 75C30 75 5 50 5 25C5 11.19 16.19 0 30 0C43.81 0 55 11.19 55 25C55 50 30 75 30 75Z" fill="var(--color-primary-500)" opacity="0.7"/>
+        </svg>
+        <svg class="hero__leaf hero__leaf--2" viewBox="0 0 40 55" fill="none" aria-hidden="true">
+          <path d="M20 52C20 52 2 35 2 17C2 8.16 10.16 0 20 0C29.84 0 38 8.16 38 17C38 35 20 52 20 52Z" fill="var(--color-primary-700)" opacity="0.5"/>
+        </svg>
+        <svg class="hero__leaf hero__leaf--3" viewBox="0 0 35 48" fill="none" aria-hidden="true">
+          <path d="M17.5 45C17.5 45 1 30 1 15C1 7.27 8.27 0 17.5 0C26.73 0 34 7.27 34 15C34 30 17.5 45 17.5 45Z" fill="var(--color-accent)" opacity="0.25"/>
+        </svg>
+
+        <!-- Logo SAFO di atas foto -->
+        <div class="hero__product-badge">
+          <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <circle cx="14" cy="14" r="14" fill="var(--color-primary-700)"/>
+            <path d="M8 14c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="14" cy="16" r="2.5" fill="var(--color-accent)"/>
+          </svg>
+          <span>safo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* -------- Hero section -------- */
+  .hero {
+    background: var(--color-bg);
+    padding-top: var(--space-10);
+    padding-bottom: var(--space-12);
+    overflow: hidden;
+  }
+
+  /* -------- Inner layout -------- */
+  .hero__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    align-items: center;
+  }
+
+  /* Mobile: foto di atas, teks di bawah — foto TIDAK mendominasi viewport */
+  @media (max-width: 767px) {
+    .hero__inner {
+      grid-template-rows: auto 1fr;
+    }
+
+    .hero__media {
+      order: -1; /* foto naik ke atas */
+      max-height: 240px;
+    }
+  }
+
+  /* Desktop: side-by-side */
+  @media (min-width: 1024px) {
+    .hero__inner {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-16);
+    }
+  }
+
+  /* -------- Konten kiri -------- */
+  .hero__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    max-width: 560px;
+  }
+
+  .hero__label {
+    margin-bottom: 0; /* override global */
+  }
+
+  /* Headline */
+  .hero__headline {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+  }
+
+  .hero__headline-accent {
+    color: var(--color-accent);
+  }
+
+  /* Deskripsi */
+  .hero__desc {
+    font-size: var(--text-base);
+    color: var(--color-ink-muted);
+    line-height: var(--leading-loose);
+    max-width: 48ch;
+  }
+
+  /* Search */
+  .hero__search {
+    max-width: 480px;
+  }
+
+  /* Chips */
+  .hero__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  /* -------- Media kanan -------- */
+  .hero__media {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Blob dekorasi background */
+  .hero__blob {
+    position: absolute;
+    width: 85%;
+    height: 85%;
+    background: radial-gradient(
+      ellipse at 60% 40%,
+      var(--color-primary-100) 0%,
+      transparent 70%
+    );
+    border-radius: 50%;
+    z-index: 0;
+  }
+
+  /* -------- Product wrap -------- */
+  .hero__product-wrap {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 480px;
+    margin: auto;
+  }
+
+  /* Foto produk */
+  .hero__product-img {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    border-radius: var(--radius-lg);
+    object-fit: cover;
+    position: relative;
+    z-index: 2;
+  }
+
+  @media (max-width: 767px) {
+    .hero__product-img {
+      max-width: 260px;
+      border-radius: var(--radius-md);
+    }
+  }
+
+  /* -------- Animasi utama: hero product shot --------
+     Scale+fade, ~400ms, SEKALI saja saat halaman dimuat.
+     prefers-reduced-motion: dinonaktifkan oleh tokens.css
+  -------- */
+  @keyframes hero-reveal {
+    from {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .hero__product-wrap {
+    animation: hero-reveal var(--motion-reveal) var(--easing-enter) both;
+  }
+
+  /* -------- Stiker diskon -------- */
+  .hero__sticker {
+    position: absolute;
+    top: -12px;
+    right: -8px;
+    z-index: 4;
+    width: 76px;
+    height: 76px;
+    background: var(--color-accent-strong);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-interactive);
+    transform: rotate(12deg);
+    text-align: center;
+    line-height: 1.1;
+  }
+
+  @media (min-width: 768px) {
+    .hero__sticker {
+      width: 92px;
+      height: 92px;
+      top: -16px;
+      right: -16px;
+    }
+  }
+
+  .hero__sticker-line1,
+  .hero__sticker-line2 {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: var(--font-weight-bold);
+    color: rgba(255 255 255 / 0.85);
+    display: block;
+  }
+
+  .hero__sticker-pct {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: var(--font-weight-bold);
+    color: #fff;
+    display: block;
+    line-height: 1;
+  }
+
+  @media (min-width: 768px) {
+    .hero__sticker-pct {
+      font-size: 26px;
+    }
+  }
+
+  /* -------- Daun dekorasi -------- */
+  .hero__leaf {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero__leaf--1 {
+    width: 60px;
+    top: -20px;
+    left: -10px;
+    transform: rotate(-15deg);
+  }
+
+  .hero__leaf--2 {
+    width: 40px;
+    bottom: -10px;
+    right: 10px;
+    transform: rotate(20deg);
+  }
+
+  .hero__leaf--3 {
+    width: 35px;
+    bottom: 20px;
+    left: -15px;
+    transform: rotate(-30deg);
+  }
+
+  @media (max-width: 767px) {
+    .hero__leaf--1 { width: 40px; }
+    .hero__leaf--2 { width: 28px; }
+    .hero__leaf--3 { width: 24px; }
+  }
+
+  /* -------- Logo badge di foto -------- */
+  .hero__product-badge {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: rgb(255 255 255 / 0.92);
+    backdrop-filter: blur(8px);
+    padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-rest);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-700);
+  }
+</style>
+
+<script>
+  // Hero chip filter — toggle selected state
+  const heroChips = document.querySelectorAll('[data-filter="hero"]');
+  heroChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      heroChips.forEach((c) => {
+        c.setAttribute('aria-checked', 'false');
+        c.classList.remove('chip--selected');
+      });
+      chip.setAttribute('aria-checked', 'true');
+      chip.classList.add('chip--selected');
+    });
+  });
+</script>

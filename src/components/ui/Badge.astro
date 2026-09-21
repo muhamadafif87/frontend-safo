@@ -1,0 +1,76 @@
+---
+// Badge.astro — Komponen badge SAFO
+// Variant discount: bentuk "label gantung/tiket sobek" — bukan pil generik
+// Variant category: pill kecil
+
+interface Props {
+  variant?: 'discount' | 'category';
+  class?: string;
+}
+
+const {
+  variant = 'discount',
+  class: className = '',
+} = Astro.props;
+---
+
+{variant === 'discount' ? (
+  <span class={`badge badge--discount ${className}`}>
+    <slot />
+  </span>
+) : (
+  <span class={`badge badge--category ${className}`}>
+    <slot />
+  </span>
+)}
+
+<style>
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+  }
+
+  /* -------- Discount badge --------
+     Bentuk "label gantung/tiket sobek":
+     Sudut kiri bawah berlubang (efek tiket) lewat pseudo-element.
+     Bukan pil generik yang monoton.
+  -------- */
+  .badge--discount {
+    position: relative;
+    background: var(--color-accent-strong);
+    color: #fff;
+    font-size: var(--text-sm);
+    padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
+    /* Sudut kanan bawah dipotong — efek tiket */
+    clip-path: polygon(0 0, 100% 0, 100% 60%, 85% 100%, 0 100%);
+    border-radius: var(--radius-xs) 0 0 0;
+    min-width: 48px;
+    text-align: center;
+  }
+
+  /* Lubang kecil kiri bawah — tiket sobek */
+  .badge--discount::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    bottom: -1px;
+    width: 10px;
+    height: 10px;
+    background: var(--color-bg); /* warna background kartu */
+    border-radius: 50%;
+  }
+
+  /* -------- Category badge -------- */
+  .badge--category {
+    background: var(--color-primary-100);
+    color: var(--color-primary-700);
+    font-size: var(--text-xs);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-pill);
+    font-weight: var(--font-weight-semibold);
+  }
+</style>

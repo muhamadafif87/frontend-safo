@@ -1,0 +1,87 @@
+---
+// Chip.astro — Filter chip dengan toggle state
+// aria-pressed untuk aksesibilitas
+
+interface Props {
+  label: string;
+  value?: string;
+  selected?: boolean;
+  class?: string;
+  id?: string;
+  'data-filter'?: string;
+}
+
+const {
+  label,
+  value = '',
+  selected = false,
+  class: className = '',
+  id,
+  'data-filter': dataFilter,
+} = Astro.props;
+---
+
+<button
+  class={`chip ${selected ? 'chip--selected' : ''} ${className}`}
+  role="checkbox"
+  aria-checked={selected ? 'true' : 'false'}
+  data-value={value}
+  data-filter={dataFilter}
+  id={id}
+  type="button"
+>
+  {label}
+</button>
+
+<style>
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-4);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-ink-muted);
+    background: var(--color-bg-alt);
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+      color var(--motion-fast) var(--easing-standard),
+      background-color var(--motion-fast) var(--easing-standard),
+      border-color var(--motion-fast) var(--easing-standard),
+      box-shadow var(--motion-fast) var(--easing-standard);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .chip:hover {
+    color: var(--color-primary-700);
+    border-color: var(--color-primary-500);
+    background: var(--color-primary-100);
+  }
+
+  .chip--selected,
+  .chip[aria-checked="true"] {
+    color: var(--color-bg-alt);
+    background: var(--color-primary-700);
+    border-color: var(--color-primary-700);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .chip--selected:hover,
+  .chip[aria-checked="true"]:hover {
+    background: var(--color-primary-900);
+    border-color: var(--color-primary-900);
+    color: #fff;
+  }
+
+  /* Focus visible eksplisit */
+  .chip:focus-visible {
+    outline: 2px solid var(--color-primary-700);
+    outline-offset: 2px;
+  }
+</style>

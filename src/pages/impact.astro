@@ -1,0 +1,543 @@
+---
+// impact.astro — Halaman Impact
+// Angka dampak + studi kasus UMKM + visual before/after
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import ImpactStats from '../components/sections/ImpactStats.astro';
+import CtaBanner from '../components/sections/CtaBanner.astro';
+import Toast from '../components/ui/Toast.astro';
+
+import impactData from '../data/impact-stats.json';
+
+const { caseStudies } = impactData;
+---
+
+<BaseLayout
+  title="Dampak SAFO — Makanan Terselamatkan, UMKM Terbantu"
+  description="Lihat dampak nyata SAFO: kg makanan terselamatkan, jumlah UMKM terbantu, emisi CO₂ dihindari, dan cerita sukses mitra kami."
+>
+  <Fragment slot="header"><Header /></Fragment>
+
+  <!-- Page Hero -->
+  <section class="impact-hero section">
+    <div class="container impact-hero__inner">
+      <div class="impact-hero__content">
+        <p class="section-label">Dampak Nyata</p>
+        <h1 class="impact-hero__title">
+          Setiap Suap<br/>
+          <span class="impact-hero__accent">Punya Cerita</span>
+        </h1>
+        <p class="impact-hero__desc">
+          SAFO bukan hanya marketplace — ini adalah gerakan komunitas yang mengubah
+          cara kita memandang makanan. Setiap pembelian berarti makanan yang tidak
+          jadi sampah, penghasilan tambahan untuk UMKM, dan bumi yang sedikit lebih baik.
+        </p>
+      </div>
+      <div class="impact-hero__visual" aria-hidden="true">
+        <!-- Before/After visual -->
+        <div class="impact-before-after">
+          <div class="impact-ba__side impact-ba__side--before">
+            <span class="impact-ba__label">Tanpa SAFO</span>
+            <div class="impact-ba__image-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1512389142860-9c449e58a543?w=300&q=70"
+                alt="Makanan surplus yang terbuang ke tempat sampah"
+                class="impact-ba__image"
+                loading="lazy"
+                width="300"
+                height="200"
+              />
+              <div class="impact-ba__overlay impact-ba__overlay--before">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                  <circle cx="16" cy="16" r="13" stroke="#ef4d66" stroke-width="1.5"/>
+                  <path d="M11 11l10 10M21 11L11 21" stroke="#ef4d66" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span>Terbuang</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="impact-ba__divider" aria-hidden="true">
+            <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+              <circle cx="20" cy="20" r="18" fill="var(--color-primary-100)"/>
+              <path d="M12 20h16M24 14l6 6-6 6" stroke="var(--color-primary-700)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+          <div class="impact-ba__side impact-ba__side--after">
+            <span class="impact-ba__label impact-ba__label--after">Dengan SAFO</span>
+            <div class="impact-ba__image-wrap">
+              <img
+                src="https://images.unsplash.com/photo-1512058556646-c4da40fba323?w=300&q=70"
+                alt="Makanan surplus yang berhasil terjual melalui SAFO"
+                class="impact-ba__image"
+                loading="lazy"
+                width="300"
+                height="200"
+              />
+              <div class="impact-ba__overlay impact-ba__overlay--after">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                  <circle cx="16" cy="16" r="13" stroke="#2f7a5c" stroke-width="1.5"/>
+                  <path d="M10 16l4 4 8-8" stroke="#2f7a5c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Terselamatkan</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Impact Stats -->
+  <ImpactStats />
+
+  <!-- Studi Kasus UMKM -->
+  <section class="case-studies section" aria-labelledby="case-title">
+    <div class="container">
+      <div class="case-studies__header">
+        <p class="section-label">Cerita Mitra</p>
+        <h2 class="case-studies__title" id="case-title">
+          UMKM yang Sudah<br/>Merasakan Manfaatnya
+        </h2>
+      </div>
+
+      <div class="case-studies__grid">
+        {caseStudies.map((study) => (
+          <article class="case-card">
+            <div class="case-card__stats-row">
+              <div class="case-card__stat">
+                <span class="case-card__stat-num">{study.monthlyFoodSaved} kg</span>
+                <span class="case-card__stat-label">makanan/bulan diselamatkan</span>
+              </div>
+              <div class="case-card__stat">
+                <span class="case-card__stat-num">
+                  Rp {(study.monthlyIncome / 1000).toFixed(0)}rb
+                </span>
+                <span class="case-card__stat-label">penghasilan tambahan/bulan</span>
+              </div>
+            </div>
+
+            <blockquote class="case-card__quote">
+              <p class="case-card__quote-text">"{study.testimonial}"</p>
+            </blockquote>
+
+            <div class="case-card__owner">
+              <div class="case-card__avatar" aria-hidden="true">
+                {study.ownerName.charAt(0)}
+              </div>
+              <div>
+                <p class="case-card__owner-name">{study.ownerName}</p>
+                <p class="case-card__owner-role">
+                  {study.ownerRole} · {study.name}
+                </p>
+                <p class="case-card__owner-since">
+                  Bergabung sejak {study.joinedSince}
+                </p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CO2 visual -->
+  <section class="co2-section section" aria-labelledby="co2-title">
+    <div class="container co2-section__inner">
+      <div class="co2-section__content">
+        <p class="section-label">Lingkungan</p>
+        <h2 class="co2-section__title" id="co2-title">
+          4.271 kg CO₂<br/>Tidak Jadi Terlepas
+        </h2>
+        <p class="co2-section__desc">
+          Makanan yang terbuang ke TPA menghasilkan gas metana — 25× lebih berbahaya
+          dari CO₂. Dengan mencegah food waste, komunitas SAFO sudah membantu
+          mengurangi emisi setara 4.271 kg CO₂ sejak platform berdiri.
+        </p>
+        <p class="co2-section__desc">
+          Setara dengan menanam ±142 pohon dewasa selama setahun.
+        </p>
+      </div>
+      <div class="co2-section__visual" aria-hidden="true">
+        <!-- Visualisasi lingkaran CO2 -->
+        <div class="co2-circle">
+          <svg viewBox="0 0 200 200" class="co2-circle__svg">
+            <circle cx="100" cy="100" r="80" fill="var(--color-primary-100)" opacity="0.5"/>
+            <circle cx="100" cy="100" r="60" fill="var(--color-primary-100)" opacity="0.4"/>
+            <circle cx="100" cy="100" r="40" fill="var(--color-primary-100)" opacity="0.6"/>
+          </svg>
+          <div class="co2-circle__text">
+            <span class="co2-circle__num">4.271</span>
+            <span class="co2-circle__unit">kg CO₂</span>
+            <span class="co2-circle__label">dihindari</span>
+          </div>
+        </div>
+        <div class="co2-trees">
+          <div class="co2-tree" aria-label="Pohon 1">🌳</div>
+          <div class="co2-tree" aria-label="Pohon 2">🌳</div>
+          <div class="co2-tree" aria-label="Pohon 3">🌳</div>
+          <div class="co2-tree co2-tree--sm">🌱</div>
+          <div class="co2-tree co2-tree--sm">🌱</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner />
+  <Toast />
+  <Fragment slot="footer"><Footer /></Fragment>
+</BaseLayout>
+
+<style>
+  /* -------- Hero -------- */
+  .impact-hero {
+    background: var(--color-bg);
+  }
+
+  .impact-hero__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+    align-items: center;
+  }
+
+  @media (min-width: 1024px) {
+    .impact-hero__inner {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .impact-hero__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .impact-hero__title {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+  }
+
+  .impact-hero__accent {
+    color: var(--color-accent);
+  }
+
+  .impact-hero__desc {
+    font-size: var(--text-base);
+    color: var(--color-ink-muted);
+    line-height: var(--leading-loose);
+    max-width: 50ch;
+  }
+
+  /* -------- Before/After -------- */
+  .impact-before-after {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .impact-ba__side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: center;
+  }
+
+  .impact-ba__label {
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .impact-ba__label--after {
+    color: var(--color-primary-700);
+  }
+
+  .impact-ba__image-wrap {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    width: 160px;
+  }
+
+  @media (min-width: 768px) {
+    .impact-ba__image-wrap {
+      width: 200px;
+    }
+  }
+
+  .impact-ba__image {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+  }
+
+  .impact-ba__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .impact-ba__overlay--before {
+    background: rgb(239 77 102 / 0.15);
+    color: var(--color-accent-strong);
+  }
+
+  .impact-ba__overlay--after {
+    background: rgb(47 122 92 / 0.1);
+    color: var(--color-primary-500);
+  }
+
+  .impact-ba__divider {
+    flex-shrink: 0;
+  }
+
+  /* -------- Case Studies -------- */
+  .case-studies {
+    background: var(--color-bg-alt);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .case-studies__header {
+    margin-bottom: var(--space-10);
+  }
+
+  .case-studies__title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+    margin-top: var(--space-2);
+  }
+
+  .case-studies__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 768px) {
+    .case-studies__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .case-card {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    transition: box-shadow var(--motion-base), border-color var(--motion-base);
+  }
+
+  .case-card:hover {
+    box-shadow: var(--shadow-interactive);
+    border-color: var(--color-border-strong);
+  }
+
+  .case-card__stats-row {
+    display: flex;
+    gap: var(--space-6);
+    flex-wrap: wrap;
+  }
+
+  .case-card__stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .case-card__stat-num {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-700);
+    line-height: 1;
+  }
+
+  .case-card__stat-label {
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+    line-height: var(--leading-normal);
+  }
+
+  .case-card__quote-text {
+    font-size: var(--text-base);
+    color: var(--color-ink);
+    line-height: var(--leading-loose);
+    font-style: italic;
+    max-width: none;
+  }
+
+  .case-card__owner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .case-card__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-primary-100);
+    color: var(--color-primary-700);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-bold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .case-card__owner-name {
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+    max-width: none;
+  }
+
+  .case-card__owner-role {
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+    max-width: none;
+  }
+
+  .case-card__owner-since {
+    font-size: var(--text-xs);
+    color: var(--color-primary-500);
+    max-width: none;
+  }
+
+  /* -------- CO2 Section -------- */
+  .co2-section {
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .co2-section__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .co2-section__inner {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .co2-section__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .co2-section__title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-snug);
+  }
+
+  .co2-section__desc {
+    font-size: var(--text-base);
+    color: var(--color-ink-muted);
+    line-height: var(--leading-loose);
+    max-width: 50ch;
+  }
+
+  .co2-section__visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  .co2-circle {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .co2-circle__svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .co2-circle__text {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .co2-circle__num {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-700);
+    line-height: 1;
+  }
+
+  .co2-circle__unit {
+    font-size: var(--text-sm);
+    color: var(--color-primary-500);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .co2-circle__label {
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+  }
+
+  .co2-trees {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-end;
+  }
+
+  .co2-tree {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .co2-tree--sm {
+    font-size: 1.25rem;
+  }
+</style>

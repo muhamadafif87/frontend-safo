@@ -1,0 +1,42 @@
+[
+  {
+    "id": "makanan-berat",
+    "label": "Makanan Berat",
+    "description": "Nasi, lauk, dll.",
+    "bgColor": "var(--color-cat-berat)",
+    "iconColor": "var(--color-cat-berat-icon)",
+    "icon": "bowl"
+  },
+  {
+    "id": "roti-kue",
+    "label": "Roti & Kue",
+    "description": "Roti, pastry, kue, dll.",
+    "bgColor": "var(--color-cat-roti)",
+    "iconColor": "var(--color-cat-roti-icon)",
+    "icon": "bread"
+  },
+  {
+    "id": "minuman",
+    "label": "Minuman",
+    "description": "Jus, kopi, teh, dll.",
+    "bgColor": "var(--color-cat-minum)",
+    "iconColor": "var(--color-cat-minum-icon)",
+    "icon": "drink"
+  },
+  {
+    "id": "camilan",
+    "label": "Camilan",
+    "description": "Snack, gorengan, dll.",
+    "bgColor": "var(--color-cat-camilan)",
+    "iconColor": "var(--color-cat-camilan-icon)",
+    "icon": "snack"
+  },
+  {
+    "id": "lainnya",
+    "label": "Lainnya",
+    "description": "Buah, dessert, dll.",
+    "bgColor": "var(--color-cat-lain)",
+    "iconColor": "var(--color-cat-lain-icon)",
+    "icon": "other"
+  }
+]

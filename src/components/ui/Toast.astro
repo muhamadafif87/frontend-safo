@@ -1,0 +1,164 @@
+---
+// Toast.astro — Notifikasi popup
+// aria-live="polite", auto-dismiss 3s
+// Dipicu dari FoodCard ikon favorit via window.showToast()
+---
+
+<div
+  class="toast-container"
+  role="region"
+  aria-label="Notifikasi"
+  aria-live="polite"
+  aria-atomic="true"
+  id="toast-container"
+>
+</div>
+
+<style>
+  .toast-container {
+    position: fixed;
+    bottom: var(--space-6);
+    right: var(--space-6);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    pointer-events: none;
+    max-width: min(320px, calc(100vw - var(--space-12)));
+  }
+
+  /* Toast individual — dibuat via JS */
+  :global(.toast) {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-primary-900);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-interactive);
+    pointer-events: all;
+    transform: translateX(0);
+    opacity: 1;
+    transition:
+      transform var(--motion-base) var(--easing-enter),
+      opacity var(--motion-base) var(--easing-exit);
+  }
+
+  :global(.toast--entering) {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  :global(.toast--exiting) {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  :global(.toast__icon) {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    background: rgb(255 255 255 / 0.12);
+    border-radius: var(--radius-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  :global(.toast__message) {
+    flex: 1;
+  }
+
+  :global(.toast__close) {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-xs);
+    color: rgb(255 255 255 / 0.6);
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: color var(--motion-fast);
+  }
+
+  :global(.toast__close:hover) {
+    color: #fff;
+  }
+</style>
+
+<script>
+  /**
+   * showToast(message, type?)
+   * Dapat dipanggil dari komponen lain: window.showToast('Teks notifikasi')
+   *
+   * type: 'success' | 'info' | 'error' (default: 'success')
+   */
+
+  const icons = {
+    success: `<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M2.5 7.5L5.5 10.5L11.5 4" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`,
+    info: `<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <circle cx="7" cy="7" r="5.5" stroke="#60a5fa" stroke-width="1.5"/>
+      <path d="M7 6v4M7 4.5v.5" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+    error: `<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <circle cx="7" cy="7" r="5.5" stroke="#f87171" stroke-width="1.5"/>
+      <path d="M5 5l4 4M9 5L5 9" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>`,
+  };
+
+  type ToastType = 'success' | 'info' | 'error';
+
+  function showToast(message: string, type: ToastType = 'success', duration = 3000) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'toast toast--entering';
+    toast.setAttribute('role', 'status');
+    toast.innerHTML = `
+      <span class="toast__icon">${icons[type] ?? icons.success}</span>
+      <span class="toast__message">${message}</span>
+      <button class="toast__close" aria-label="Tutup notifikasi" type="button">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M2 2l8 8M10 2L2 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    `;
+
+    container.appendChild(toast);
+
+    // Force reflow supaya transition dari entering bisa terjadi
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        toast.classList.remove('toast--entering');
+      });
+    });
+
+    // Auto-dismiss
+    const timer = setTimeout(() => dismissToast(toast), duration);
+
+    // Close button
+    const closeBtn = toast.querySelector('.toast__close');
+    closeBtn?.addEventListener('click', () => {
+      clearTimeout(timer);
+      dismissToast(toast);
+    });
+  }
+
+  function dismissToast(toast: HTMLElement) {
+    toast.classList.add('toast--exiting');
+    toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+  }
+
+  // Expose global
+  (window as any).showToast = showToast;
+</script>

@@ -1,0 +1,169 @@
+---
+// Button.astro — Komponen tombol SAFO
+// Variants: primary | secondary | ghost
+// Panah "→" bergeser 4px saat hover (afordansi, bukan glyph statis)
+
+interface Props {
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  class?: string;
+  disabled?: boolean;
+  fullWidth?: boolean;
+  hasArrow?: boolean;
+  'aria-label'?: string;
+  'aria-expanded'?: string | boolean;
+  'aria-controls'?: string;
+  id?: string;
+}
+
+const {
+  variant = 'primary',
+  size = 'md',
+  href,
+  type = 'button',
+  class: className = '',
+  disabled = false,
+  fullWidth = false,
+  hasArrow = false,
+  ...rest
+} = Astro.props;
+
+const tag = href ? 'a' : 'button';
+const classes = [
+  'btn',
+  `btn--${variant}`,
+  `btn--${size}`,
+  fullWidth ? 'btn--full' : '',
+  className,
+].filter(Boolean).join(' ');
+---
+
+{tag === 'a' ? (
+  <a href={href} class={classes} {...rest}>
+    <slot />
+    {hasArrow && <span class="btn__arrow" aria-hidden="true">→</span>}
+  </a>
+) : (
+  <button type={type} class={classes} disabled={disabled} {...rest}>
+    <slot />
+    {hasArrow && <span class="btn__arrow" aria-hidden="true">→</span>}
+  </button>
+)}
+
+<style>
+  /* -------- Base button -------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-family: var(--font-body);
+    font-weight: var(--font-weight-semibold);
+    border-radius: var(--radius-pill);
+    text-decoration: none;
+    cursor: pointer;
+    border: 2px solid transparent;
+    white-space: nowrap;
+    transition:
+      background-color var(--motion-fast) var(--easing-standard),
+      color var(--motion-fast) var(--easing-standard),
+      border-color var(--motion-fast) var(--easing-standard),
+      transform var(--motion-fast) var(--easing-standard),
+      box-shadow var(--motion-fast) var(--easing-standard);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .btn--full {
+    width: 100%;
+  }
+
+  /* -------- Sizes -------- */
+  .btn--sm {
+    font-size: var(--text-sm);
+    padding: var(--space-2) var(--space-4);
+    min-height: 36px;
+  }
+
+  .btn--md {
+    font-size: var(--text-base);
+    padding: var(--space-3) var(--space-6);
+    min-height: 44px;
+  }
+
+  .btn--lg {
+    font-size: var(--text-lg);
+    padding: var(--space-4) var(--space-8);
+    min-height: 52px;
+  }
+
+  /* -------- Variants -------- */
+
+  /* Primary — hijau gelap */
+  .btn--primary {
+    background: var(--color-primary-700);
+    color: #fff;
+    border-color: var(--color-primary-700);
+  }
+
+  .btn--primary:hover {
+    background: var(--color-primary-900);
+    border-color: var(--color-primary-900);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-interactive);
+  }
+
+  .btn--primary:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  /* Secondary — outline */
+  .btn--secondary {
+    background: transparent;
+    color: var(--color-primary-700);
+    border-color: var(--color-primary-700);
+  }
+
+  .btn--secondary:hover {
+    background: var(--color-primary-100);
+    transform: translateY(-1px);
+  }
+
+  .btn--secondary:active {
+    transform: translateY(0);
+  }
+
+  /* Ghost — teks saja */
+  .btn--ghost {
+    background: transparent;
+    color: var(--color-primary-700);
+    border-color: transparent;
+    padding-inline: var(--space-3);
+  }
+
+  .btn--ghost:hover {
+    background: var(--color-primary-100);
+    color: var(--color-primary-900);
+  }
+
+  /* -------- Panah animasi -------- */
+  /* Bergeser 4px ke kanan saat hover — afordansi, bukan dekorasi */
+  .btn__arrow {
+    display: inline-block;
+    transition: transform var(--motion-fast) var(--easing-standard);
+    will-change: transform;
+  }
+
+  .btn:hover .btn__arrow {
+    transform: translateX(4px);
+  }
+</style>

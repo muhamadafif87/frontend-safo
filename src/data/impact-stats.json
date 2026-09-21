@@ -1,0 +1,80 @@
+{
+  "headline": {
+    "foodSaved": {
+      "value": 2847,
+      "unit": "kg",
+      "label": "Makanan terselamatkan",
+      "description": "Kg makanan surplus yang berhasil dijual, bukan dibuang"
+    },
+    "merchantsHelped": {
+      "value": 143,
+      "unit": "UMKM",
+      "label": "UMKM terbantu",
+      "description": "Mitra kuliner aktif yang mengurangi food waste mereka"
+    },
+    "co2Avoided": {
+      "value": 4271,
+      "unit": "kg CO₂",
+      "label": "Emisi dihindari",
+      "description": "Estimasi emisi CO₂ yang tidak jadi terlepas dari makanan terbuang"
+    },
+    "buyersServed": {
+      "value": 9832,
+      "unit": "pembeli",
+      "label": "Pembeli puas",
+      "description": "Transaksi selesai dengan penilaian positif dari pembeli"
+    }
+  },
+  "valueProps": [
+    {
+      "id": "mudah-diakses",
+      "icon": "pin",
+      "title": "Mudah Diakses",
+      "description": "Temukan kios terdekat dengan cepat."
+    },
+    {
+      "id": "harga-hemat",
+      "icon": "percent",
+      "title": "Harga Lebih Hemat",
+      "description": "Diskon hingga 70% untuk makanan berkualitas."
+    },
+    {
+      "id": "dukung-umkm",
+      "icon": "leaf",
+      "title": "Dukung UMKM",
+      "description": "Bantu pelaku usaha lokal tetap berkembang."
+    },
+    {
+      "id": "kurangi-food-waste",
+      "icon": "globe",
+      "title": "Kurangi Food Waste",
+      "description": "Setiap pembelianmu berarti lebih sedikit makanan terbuang."
+    }
+  ],
+  "caseStudies": [
+    {
+      "id": "warung-pak-budi",
+      "name": "Warung Pak Budi",
+      "location": "Sumber, Surakarta",
+      "category": "Makanan Berat",
+      "monthlyFoodSaved": 48,
+      "monthlyIncome": 1240000,
+      "testimonial": "Dulu tiap tutup warung saya buang 5–8 porsi nasi. Sekarang habis terjual semua lewat SAFO, dan saya malah dapat tambahan pemasukan.",
+      "ownerName": "Budi Santoso",
+      "ownerRole": "Pemilik Warung",
+      "joinedSince": "Januari 2026"
+    },
+    {
+      "id": "sofiro-bakery",
+      "name": "Sofiro Bakery",
+      "location": "Laweyan, Surakarta",
+      "category": "Roti & Kue",
+      "monthlyFoodSaved": 67,
+      "monthlyIncome": 890000,
+      "testimonial": "Bakery saya produksi pagi hari. Biasanya sisa siang jadi sampah. Dengan SAFO, sisa batch jadi pemasukan tambahan yang lumayan.",
+      "ownerName": "Sofi Rahayu",
+      "ownerRole": "Pemilik & Baker",
+      "joinedSince": "Februari 2026"
+    }
+  ]
+}

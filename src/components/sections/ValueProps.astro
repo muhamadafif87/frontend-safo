@@ -1,0 +1,243 @@
+---
+// ValueProps.astro — Section "Kenapa Food Nearby?"
+// 4 value props dengan ikon berbeda per prop
+// Background gelap (primary-900) dari wireframe
+
+import impactData from '../../data/impact-stats.json';
+
+const { valueProps } = impactData;
+
+const iconMap: Record<string, string> = {
+  pin: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+    <path d="M14 2C9.58 2 6 5.58 6 10c0 6.5625 8 16 8 16S22 16.5625 22 10c0-4.42-3.58-8-8-8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <circle cx="14" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+  </svg>`,
+  percent: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+    <circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.5"/>
+    <circle cx="19" cy="19" r="3" stroke="currentColor" stroke-width="1.5"/>
+    <path d="M20 8L8 20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`,
+  leaf: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+    <path d="M14 4C14 4 6 8 6 16C6 20.418 9.582 24 14 24C18.418 24 22 20.418 22 16C22 8 14 4 14 4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+    <path d="M14 24V18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`,
+  globe: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+    <circle cx="14" cy="14" r="10" stroke="currentColor" stroke-width="1.5"/>
+    <path d="M4 14h20M14 4c-2.5 3-4 6-4 10s1.5 7 4 10M14 4c2.5 3 4 6 4 10s-1.5 7-4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`,
+};
+---
+
+<section class="value-props" aria-labelledby="value-props-title">
+  <div class="container value-props__inner">
+
+    <!-- Foto orang + tas SAFO (sesuai wireframe: foto di kiri section gelap) -->
+    <div class="value-props__photo" aria-hidden="true">
+      <img
+        src="https://images.unsplash.com/photo-1607349913338-fca6f7fc42d0?w=500&q=80"
+        alt="Pelanggan SAFO membawa tas makanan surplus"
+        class="value-props__photo-img"
+        loading="lazy"
+        width="400"
+        height="480"
+      />
+      <!-- Bubble stats kecil di foto -->
+      <div class="value-props__stat-bubble">
+        <span class="value-props__stat-num">2.847</span>
+        <span class="value-props__stat-label">kg makanan<br/>diselamatkan</span>
+      </div>
+      <!-- Label handwritten -->
+      <div class="value-props__handlabel" aria-hidden="true">
+        <svg width="80" height="28" viewBox="0 0 80 28" fill="none">
+          <path d="M5 20 Q15 8 25 14 Q35 20 45 12 Q55 5 65 15 Q72 22 78 18" stroke="var(--color-accent)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        </svg>
+        <span>Hemat · Rasa · Berdampak</span>
+      </div>
+    </div>
+
+    <!-- Konten kanan -->
+    <div class="value-props__content">
+      <h2 class="value-props__title" id="value-props-title">
+        Kenapa Food Nearby?
+      </h2>
+
+      <div class="value-props__grid">
+        {valueProps.map((prop) => (
+          <div class="value-props__card">
+            <div class="value-props__icon" aria-hidden="true">
+              <Fragment set:html={iconMap[prop.icon] ?? iconMap.globe} />
+            </div>
+            <div>
+              <h3 class="value-props__card-title">{prop.title}</h3>
+              <p class="value-props__card-desc">{prop.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* -------- Section -------- */
+  .value-props {
+    background: var(--color-primary-900);
+    color: #fff;
+    padding-block: var(--space-16);
+    overflow: hidden;
+  }
+
+  .value-props__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-10);
+    align-items: center;
+  }
+
+  @media (min-width: 1024px) {
+    .value-props__inner {
+      grid-template-columns: 2fr 3fr;
+      gap: var(--space-16);
+    }
+  }
+
+  /* -------- Foto kiri -------- */
+  .value-props__photo {
+    position: relative;
+    display: none; /* disembunyikan di mobile, muncul di tablet+ */
+  }
+
+  @media (min-width: 768px) {
+    .value-props__photo {
+      display: block;
+    }
+  }
+
+  .value-props__photo-img {
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    margin: 0 auto;
+    display: block;
+  }
+
+  /* Stat bubble overlay */
+  .value-props__stat-bubble {
+    position: absolute;
+    top: var(--space-6);
+    right: -var(--space-4);
+    background: var(--color-bg-alt);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    box-shadow: var(--shadow-interactive);
+    text-align: center;
+    min-width: 120px;
+  }
+
+  @media (min-width: 1024px) {
+    .value-props__stat-bubble {
+      right: -20px;
+    }
+  }
+
+  .value-props__stat-num {
+    display: block;
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-700);
+    line-height: 1;
+  }
+
+  .value-props__stat-label {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-1);
+    line-height: var(--leading-snug);
+  }
+
+  /* Label handwritten */
+  .value-props__handlabel {
+    position: absolute;
+    bottom: var(--space-4);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-1);
+    white-space: nowrap;
+  }
+
+  .value-props__handlabel span {
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    color: rgb(255 255 255 / 0.7);
+  }
+
+  /* -------- Konten kanan -------- */
+  .value-props__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .value-props__title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-bold);
+    color: #fff;
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+  }
+
+  /* -------- Grid 4 props -------- */
+  .value-props__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 600px) {
+    .value-props__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .value-props__card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .value-props__icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: rgb(255 255 255 / 0.08);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary-500);
+  }
+
+  .value-props__card-title {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-bold);
+    color: #fff;
+    margin-bottom: var(--space-1);
+    line-height: var(--leading-snug);
+  }
+
+  .value-props__card-desc {
+    font-size: var(--text-sm);
+    color: rgb(255 255 255 / 0.6);
+    line-height: var(--leading-normal);
+    max-width: 28ch;
+  }
+</style>
