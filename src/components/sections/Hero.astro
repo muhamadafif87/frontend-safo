@@ -31,21 +31,21 @@ const chips = [
       </p>
 
       <!-- Headline -->
-      <h1 class="hero__headline">
+      <h1 class="hero__headline animate-in animate-in--headline">
         Good Food,
         <br />
         <span class="hero__headline-accent">Close to You</span>
       </h1>
 
       <!-- Deskripsi -->
-      <p class="hero__desc">
+      <p class="hero__desc animate-in animate-in--subheadline">
         Temukan makanan surplus dari UMKM di sekitar lokasimu.
         Nikmati makanan enak dengan harga lebih hemat, sambil membantu
         mengurangi food waste.
       </p>
 
       <!-- Search bar -->
-      <div class="hero__search">
+      <div class="hero__search animate-in animate-in--subheadline">
         <Input
           placeholder="Cari lokasi (contoh: UNS, Solo)"
           id="hero-search"
@@ -55,7 +55,7 @@ const chips = [
       </div>
 
       <!-- Filter chips -->
-      <div class="hero__chips" role="group" aria-label="Filter makanan">
+      <div class="hero__chips animate-in animate-in--subheadline" role="group" aria-label="Filter makanan">
         {chips.map((chip) => (
           <Chip
             label={chip.label}
@@ -91,24 +91,9 @@ const chips = [
           fetchpriority="high"
         />
 
-        <!-- Dekorasi daun -->
-        <svg class="hero__leaf hero__leaf--1" viewBox="0 0 60 80" fill="none" aria-hidden="true">
-          <path d="M30 75C30 75 5 50 5 25C5 11.19 16.19 0 30 0C43.81 0 55 11.19 55 25C55 50 30 75 30 75Z" fill="var(--color-primary-500)" opacity="0.7"/>
-        </svg>
-        <svg class="hero__leaf hero__leaf--2" viewBox="0 0 40 55" fill="none" aria-hidden="true">
-          <path d="M20 52C20 52 2 35 2 17C2 8.16 10.16 0 20 0C29.84 0 38 8.16 38 17C38 35 20 52 20 52Z" fill="var(--color-primary-700)" opacity="0.5"/>
-        </svg>
-        <svg class="hero__leaf hero__leaf--3" viewBox="0 0 35 48" fill="none" aria-hidden="true">
-          <path d="M17.5 45C17.5 45 1 30 1 15C1 7.27 8.27 0 17.5 0C26.73 0 34 7.27 34 15C34 30 17.5 45 17.5 45Z" fill="var(--color-accent)" opacity="0.25"/>
-        </svg>
-
         <!-- Logo SAFO di atas foto -->
         <div class="hero__product-badge">
-          <svg width="20" height="20" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-            <circle cx="14" cy="14" r="14" fill="var(--color-primary-700)"/>
-            <path d="M8 14c0-3.314 2.686-6 6-6s6 2.686 6 6" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="14" cy="16" r="2.5" fill="var(--color-accent)"/>
-          </svg>
+          <img src="/favicon.svg" alt="SAFO" style="width:24px;height:auto;" />
           <span>safo</span>
         </div>
       </div>
@@ -136,12 +121,25 @@ const chips = [
   /* Mobile: foto di atas, teks di bawah — foto TIDAK mendominasi viewport */
   @media (max-width: 767px) {
     .hero__inner {
-      grid-template-rows: auto 1fr;
+      grid-template-rows: auto auto;
+      gap: var(--space-6);
+    }
+
+    .hero__content {
+      max-width: 100%;
     }
 
     .hero__media {
-      order: -1; /* foto naik ke atas */
-      max-height: 240px;
+      order: -1;
+      max-height: none;
+      width: 100%;
+      margin: 0 auto;
+      justify-self: center;
+    }
+
+    .hero__product-wrap {
+      width: min(100%, 320px);
+      margin: 0 auto;
     }
   }
 
@@ -190,13 +188,14 @@ const chips = [
   /* Search */
   .hero__search {
     max-width: 480px;
+    opacity: 1;
   }
 
-  /* Chips */
   .hero__chips {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);
+    opacity: 1;
   }
 
   /* -------- Media kanan -------- */
@@ -245,8 +244,31 @@ const chips = [
 
   @media (max-width: 767px) {
     .hero__product-img {
-      max-width: 260px;
+      max-width: 100%;
+      min-width: 0;
       border-radius: var(--radius-md);
+    }
+
+    .hero__sticker {
+      width: 64px;
+      height: 64px;
+      top: 10px;
+      right: 8px;
+    }
+
+    .hero__sticker-line1,
+    .hero__sticker-line2 {
+      font-size: 8px;
+    }
+
+    .hero__sticker-pct {
+      font-size: 18px;
+    }
+
+    .hero__product-badge {
+      bottom: 10px;
+      left: 10px;
+      padding: var(--space-1) var(--space-2);
     }
   }
 

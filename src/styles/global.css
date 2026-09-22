@@ -132,6 +132,100 @@ a:hover {
 }
 
 /* --------------------------------------------------
+   Reveal / entrance animation utilities
+   -------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition:
+    opacity var(--duration-medium) var(--ease-out-premium),
+    transform var(--duration-medium) var(--ease-out-premium);
+  will-change: opacity, transform;
+}
+
+.reveal--up {
+  transform: translate3d(0, 28px, 0);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.reveal--staggered {
+  transition-delay: var(--delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal--up {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* --------------------------------------------------
+   Hero entrance animation helpers
+   -------------------------------------------------- */
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-in {
+  opacity: 0;
+  animation: fadeSlideUp var(--duration-medium) var(--ease-out-premium) forwards;
+}
+
+.animate-in--headline { animation-delay: 0ms; }
+.animate-in--subheadline { animation-delay: 150ms; }
+.animate-in--cta { animation-delay: 300ms; }
+
+@keyframes shimmerPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 rgba(18, 64, 58, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(18, 64, 58, 0.05);
+  }
+}
+
+.shimmer-pulse {
+  animation: shimmerPulse 3s ease-in-out infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marquee__track {
+  display: inline-flex;
+  min-width: max-content;
+  animation: marquee 22s linear infinite;
+}
+
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+/* --------------------------------------------------
    Section label (bukan tracked caps — huruf normal + warna aksen)
    -------------------------------------------------- */
 .section-label {

@@ -61,9 +61,12 @@ const iconMap: Record<string, string> = {
         Kenapa Food Nearby?
       </h2>
 
-      <div class="value-props__grid">
-        {valueProps.map((prop) => (
-          <div class="value-props__card">
+      <div class="value-props__grid reveal-group">
+        {valueProps.map((prop, index) => (
+          <div
+            class="value-props__card reveal reveal--up reveal--staggered"
+            style={`--delay:${index * 120}ms`}
+          >
             <div class="value-props__icon" aria-hidden="true">
               <Fragment set:html={iconMap[prop.icon] ?? iconMap.globe} />
             </div>
@@ -211,6 +214,19 @@ const iconMap: Record<string, string> = {
     display: flex;
     align-items: flex-start;
     gap: var(--space-4);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    transition:
+      transform var(--duration-fast) var(--ease-out-premium),
+      box-shadow var(--duration-fast) var(--ease-out-premium),
+      background-color var(--duration-fast) var(--ease-out-premium);
+    will-change: transform, box-shadow;
+  }
+
+  .value-props__card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 30px -18px rgba(10, 33, 29, 0.35);
+    background: rgba(255, 255, 255, 0.04);
   }
 
   .value-props__icon {
@@ -223,6 +239,11 @@ const iconMap: Record<string, string> = {
     align-items: center;
     justify-content: center;
     color: var(--color-primary-500);
+    transition: transform var(--duration-fast) var(--ease-out-premium);
+  }
+
+  .value-props__card:hover .value-props__icon {
+    transform: scale(1.08);
   }
 
   .value-props__card-title {
