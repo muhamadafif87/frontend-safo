@@ -17,8 +17,63 @@ import Modal from '../components/ui/Modal.astro';
 
 import categories from '../data/categories.json';
 import foods from '../data/foods.json';
+import partners from '../data/partners.json';
 
-const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
+const maxDiscount = Math.max(...foods.map((f) => f.discount));
+const stats = [
+  { value: String(partners.length), label: 'Mitra di sekitar UNS' },
+  { value: String(foods.length), label: 'Makanan tersedia' },
+  { value: `${maxDiscount}%`, label: 'Diskon tertinggi' },
+];
+
+const sortOptions = [
+  { value: 'nearest', label: 'Terdekat' },
+  { value: 'discount', label: 'Diskon Terbesar' },
+  { value: 'price', label: 'Harga Terendah' },
+];
+
+// Grup filter — dirender sebagai chip pilihan tunggal
+const filterGroups = [
+  {
+    key: 'price',
+    title: 'Harga',
+    options: [
+      { label: 'Semua', value: 'all' },
+      { label: '< Rp 5.000', value: 'under-5k' },
+      { label: 'Rp 5.000 – 10.000', value: '5k-10k' },
+      { label: 'Rp 10.000 – 20.000', value: '10k-20k' },
+      { label: '> Rp 20.000', value: 'above-20k' },
+    ],
+  },
+  {
+    key: 'distance',
+    title: 'Jarak',
+    options: [
+      { label: 'Semua', value: 'all' },
+      { label: '< 1 km', value: '1km' },
+      { label: '1 – 2 km', value: '1-2km' },
+      { label: '2 – 5 km', value: '2-5km' },
+    ],
+  },
+  {
+    key: 'category',
+    title: 'Kategori',
+    options: [
+      { label: 'Semua', value: 'all' },
+      ...categories.map((c) => ({ label: c.label, value: c.id })),
+    ],
+  },
+  {
+    key: 'pickup',
+    title: 'Waktu pickup',
+    options: [
+      { label: 'Kapan saja', value: 'all' },
+      { label: 'Pagi (07–12)', value: 'morning' },
+      { label: 'Siang (12–17)', value: 'afternoon' },
+      { label: 'Sore/Malam (17–22)', value: 'evening' },
+    ],
+  },
+];
 ---
 
 <BaseLayout
@@ -46,7 +101,7 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
             bgColor={cat.bgColor}
             iconColor={cat.iconColor}
             icon={cat.icon as any}
-            selected={i === 0}
+            selected={false}
           />
         ))}
       </div>
@@ -54,21 +109,116 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
   </section>
 
   <!-- Section Listing + Peta -->
-  <section class="listing section" aria-labelledby="listing-title">
+  <section class="listing section" id="listing" aria-labelledby="listing-title">
     <div class="container">
       <!-- Header listing -->
       <div class="listing__header">
         <div class="listing__header-left">
           <p class="section-label">Temukan</p>
           <h2 class="listing__title" id="listing-title">
-            Makanan Surplus<br/>di Sekitarmu
+            Makanan Surplus<br />di Sekitarmu
           </h2>
         </div>
-        <p class="listing__desc">
-          Gunakan peta atau pencarian untuk menemukan makanan surplus
-          di dari UMKM terdekat. Pesan dengan mudah, ambil langsung,
-          dan nikmati harga spesialnya!
-        </p>
+        <div class="listing__header-right">
+          <p class="listing__desc">
+            Cari lewat pencarian atau jelajahi peta untuk menemukan makanan surplus dari
+            UMKM terdekat. Pesan mudah, ambil langsung, nikmati harga spesialnya!
+          </p>
+          <dl class="listing__stats">
+            {stats.map((stat) => (
+              <div class="listing__stat">
+                <dt>{stat.label}</dt>
+                <dd>{stat.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+
+      <!-- Kontrol: toolbar mobile + filter (satu baris penuh di desktop) -->
+      <div class="listing__controls">
+        <!-- Bar: pencarian + tombol filter (panel filter tertutup secara default) -->
+        <div class="listing__bar">
+          <form class="listing__search" role="search" action="/#listing" method="get" id="listing-search-form">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input
+              type="search"
+              name="q"
+              id="listing-search"
+              placeholder="Cari makanan atau toko..."
+              class="listing__search-input"
+              aria-label="Cari makanan atau toko"
+              autocomplete="off"
+            />
+          </form>
+
+          <button
+            class="listing__toggle listing__toggle--filter"
+            type="button"
+            id="filter-toggle"
+            aria-expanded="false"
+            aria-controls="listing-filters"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M2 4h12M4 8h8M6 12h4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            Filter
+            <span class="listing__badge" id="filter-badge" hidden>0</span>
+          </button>
+
+          <button type="button" class="listing__reset-link" data-reset-filters hidden>
+            Reset
+          </button>
+
+          <!-- Toggle peta (mobile/tablet) -->
+          <button
+            class="listing__toggle listing__toggle--map"
+            type="button"
+            id="map-toggle-btn"
+            aria-expanded="false"
+            aria-controls="mobile-map-sheet"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M2 4l4-2 4 2 4-2v9l-4 2-4-2-4 2V4z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+              <path d="M6 2v9M10 4v9" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+            Lihat Peta
+          </button>
+        </div>
+
+        <!-- Panel filter (dibuka lewat tombol Filter) -->
+        <aside class="listing__filters" id="listing-filters" aria-label="Filter makanan">
+          <p class="listing__location">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M7 1C4.79 1 3 2.79 3 5c0 3.25 4 8 4 8S11 8.25 11 5C11 2.79 9.21 1 7 1z" stroke="currentColor" stroke-width="1.1"/>
+              <circle cx="7" cy="5" r="1.5" stroke="currentColor" stroke-width="1.1"/>
+            </svg>
+            Surakarta (sekitar UNS)
+          </p>
+
+          {filterGroups.map((group) => (
+            <fieldset class="listing__filter-group">
+              <legend class="listing__filter-label">{group.title}</legend>
+              <div class="listing__chips">
+                {group.options.map((opt) => (
+                  <label class="listing__chip">
+                    <input
+                      type="radio"
+                      name={`filter-${group.key}`}
+                      value={opt.value}
+                      checked={opt.value === 'all'}
+                      data-filter={group.key}
+                    />
+                    <span>{opt.label}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ))}
+        </aside>
       </div>
 
       <!-- Listing split view -->
@@ -76,139 +226,19 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
         <!-- Panel kiri: filter + kartu -->
         <div class="listing__panel">
 
-          <!-- Filter sidebar -->
-          <aside class="listing__filters" aria-label="Filter makanan">
-            <!-- Lokasi -->
-            <div class="listing__filter-group">
-              <label class="listing__filter-label" for="filter-location">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                  <path d="M7 1C4.79 1 3 2.79 3 5c0 3.25 4 8 4 8S11 8.25 11 5C11 2.79 9.21 1 7 1z" stroke="currentColor" stroke-width="1.1"/>
-                  <circle cx="7" cy="5" r="1.5" stroke="currentColor" stroke-width="1.1"/>
-                </svg>
-                Surakarta (Sekitar UNS)
-              </label>
-            </div>
-
-            <!-- Search dalam listing -->
-            <div class="listing__search-wrap">
-              <input
-                type="search"
-                id="filter-location"
-                placeholder="Cari makanan atau toko..."
-                class="listing__search-input"
-                aria-label="Cari makanan atau toko"
-              />
-            </div>
-
-            <!-- Filter Harga -->
-            <fieldset class="listing__filter-group">
-              <legend class="listing__filter-label">Filter Harga</legend>
-              <div class="listing__radio-group">
-                {[
-                  { label: 'Semua Harga', value: 'all', checked: true },
-                  { label: '< Rp 5.000', value: 'under-5k', checked: false },
-                  { label: 'Rp 5.000 – 10.000', value: '5k-10k', checked: false },
-                  { label: 'Rp 10.000 – 20.000', value: '10k-20k', checked: false },
-                  { label: '> Rp 20.000', value: 'above-20k', checked: false },
-                ].map((opt) => (
-                  <label class="listing__radio">
-                    <input
-                      type="radio"
-                      name="filter-price"
-                      value={opt.value}
-                      checked={opt.checked}
-                      data-filter="price"
-                    />
-                    <span>{opt.label}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <!-- Filter Jarak -->
-            <fieldset class="listing__filter-group">
-              <legend class="listing__filter-label">Jarak</legend>
-              <div class="listing__radio-group">
-                {[
-                  { label: 'Semua', value: 'all', checked: true },
-                  { label: '< 1 km', value: '1km', checked: false },
-                  { label: '1 – 2 km', value: '1-2km', checked: false },
-                  { label: '2 – 5 km', value: '2-5km', checked: false },
-                ].map((opt) => (
-                  <label class="listing__radio">
-                    <input
-                      type="radio"
-                      name="filter-distance"
-                      value={opt.value}
-                      checked={opt.checked}
-                      data-filter="distance"
-                    />
-                    <span>{opt.label}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <!-- Filter Kategori -->
-            <fieldset class="listing__filter-group">
-              <legend class="listing__filter-label">Kategori</legend>
-              <div class="listing__radio-group">
-                {[{ id: 'all', label: 'Semua' }, ...categories].map((cat) => (
-                  <label class="listing__radio">
-                    <input
-                      type="radio"
-                      name="filter-category"
-                      value={cat.id}
-                      checked={cat.id === 'all'}
-                      data-filter="category"
-                    />
-                    <span>{cat.label}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <!-- Waktu Pickup -->
-            <div class="listing__filter-group">
-              <p class="listing__filter-label">Waktu Pickup</p>
-              <select class="listing__select" aria-label="Pilih waktu pickup">
-                <option value="">Kapan saja</option>
-                <option value="morning">Pagi (07:00–12:00)</option>
-                <option value="afternoon">Siang (12:00–17:00)</option>
-                <option value="evening">Sore/Malam (17:00–22:00)</option>
-              </select>
-            </div>
-          </aside>
-
           <!-- Listing utama -->
           <div class="listing__main">
-            <!-- Header listing main -->
             <div class="listing__main-header">
-              <span class="listing__count" id="food-count">
+              <span class="listing__count" id="food-count" aria-live="polite">
                 Makanan Tersedia (<span id="count-num">{foods.length}</span>)
               </span>
               <div class="listing__sort">
-                <label class="sr-only" for="sort-select">Urut berdasarkan</label>
-                <select class="listing__sort-select" id="sort-select" aria-label="Urut berdasarkan">
-                  {sortOptions.map((opt) => <option>{opt}</option>)}
+                <label class="listing__sort-label" for="sort-select">Urutkan</label>
+                <select class="listing__sort-select" id="sort-select">
+                  {sortOptions.map((opt) => <option value={opt.value}>{opt.label}</option>)}
                 </select>
               </div>
             </div>
-
-            <!-- Toggle peta (mobile) -->
-            <button
-              class="listing__map-toggle"
-              type="button"
-              id="map-toggle-btn"
-              aria-expanded="false"
-              aria-controls="mobile-map-sheet"
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M2 4l4-2 4 2 4-2v9l-4 2-4-2-4 2V4z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
-                <path d="M6 2v9M10 4v9" stroke="currentColor" stroke-width="1.2"/>
-              </svg>
-              Lihat Peta
-            </button>
 
             <!-- Grid kartu -->
             <div class="listing__grid" id="food-grid">
@@ -224,6 +254,8 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
                   discount={food.discount}
                   distance={food.distance}
                   pickupLabel={food.pickupLabel}
+                  pickupStart={food.pickupStart}
+                  pickupEnd={food.pickupEnd}
                   available={food.available}
                   rating={food.rating}
                   image={food.image}
@@ -240,14 +272,26 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
                 <path d="M16 24h16M24 16v16" stroke="var(--color-border-strong)" stroke-width="2" stroke-linecap="round"/>
               </svg>
               <p>Tidak ada makanan yang cocok dengan filter ini.</p>
-              <button class="listing__reset" type="button" id="reset-filters">Reset filter</button>
+              <button class="listing__reset" type="button" data-reset-filters>Reset filter</button>
             </div>
           </div>
         </div>
 
         <!-- Peta kanan (sticky desktop, hidden mobile) -->
-        <div class="listing__map-desktop" aria-label="Peta lokasi merchant">
-          <MapPanel />
+        <div class="listing__map-col">
+          <div class="listing__map-head">
+            <span class="listing__map-title">
+              <svg width="14" height="18" viewBox="0 0 20 24" fill="none" aria-hidden="true">
+                <path d="M10 0C4.477 0 0 4.477 0 10c0 7.5 10 14 10 14S20 17.5 20 10C20 4.477 15.523 0 10 0z" fill="var(--color-primary-700)"/>
+                <circle cx="10" cy="10" r="3.5" fill="#fff"/>
+              </svg>
+              Peta Mitra
+            </span>
+            <span class="listing__map-hint">Arahkan kursor ke pin untuk lihat diskon</span>
+          </div>
+          <div class="listing__map-desktop" aria-label="Peta lokasi merchant">
+            <MapPanel />
+          </div>
         </div>
       </div>
 
@@ -258,6 +302,7 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
         aria-hidden="true"
         role="dialog"
         aria-label="Peta merchant terdekat"
+        inert
       >
         <div class="listing__map-sheet-handle" aria-hidden="true"></div>
         <div class="listing__map-sheet-header">
@@ -338,19 +383,84 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
     padding-bottom: var(--space-16);
   }
 
-  /* Header listing */
+  /* Header listing: judul di kiri, deskripsi + angka ringkas di kanan */
   .listing__header {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--space-4);
-    margin-bottom: var(--space-8);
+    gap: var(--space-5);
+    margin-bottom: var(--space-6);
   }
 
   @media (min-width: 768px) {
     .listing__header {
-      grid-template-columns: 1fr 1fr;
-      align-items: start;
+      grid-template-columns: 1fr minmax(0, 1fr);
+      align-items: stretch; /* kanan setinggi blok judul di kiri */
+      gap: var(--space-10);
     }
+  }
+
+  .listing__header-left {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .listing__header-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* atas sejajar "Temukan", bawah sejajar baris judul terakhir */
+    gap: var(--space-3);
+  }
+
+  .listing__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+  }
+
+  .listing__stat {
+    display: flex;
+    flex-direction: column-reverse; /* angka di atas, label di bawah (dt dulu di DOM) */
+    flex: 1 1 0;
+    min-width: 96px;
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  /* Desktop: angka & label sebaris supaya kartu ringkas dan nyaman dibaca */
+  @media (min-width: 1024px) {
+    .listing__stat {
+      flex-direction: row;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+    }
+
+    .listing__stat dd {
+      order: 1;
+    }
+
+    .listing__stat dt {
+      order: 2;
+    }
+  }
+
+  .listing__stat dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-700);
+    line-height: var(--leading-tight);
+  }
+
+  .listing__stat dt {
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+    line-height: var(--leading-snug);
   }
 
   .listing__title {
@@ -365,8 +475,8 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
   .listing__desc {
     font-size: var(--text-sm);
     color: var(--color-ink-muted);
-    line-height: var(--leading-loose);
-    max-width: 48ch;
+    line-height: var(--leading-normal);
+    max-width: 64ch; /* ruang cukup supaya 2 baris di desktop */
   }
 
   /* -------- Split view -------- */
@@ -379,41 +489,149 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
   @media (min-width: 1024px) {
     .listing__split {
       grid-template-columns: 1fr 1fr;
-      align-items: start;
+      align-items: stretch; /* peta sama tinggi dengan kolom kartu, tanpa sticky */
     }
   }
 
-  /* Panel kiri: filter + kartu */
+  .listing {
+    scroll-margin-top: var(--nav-height);
+  }
+
+  /* Panel kiri: toolbar → filter → kartu (satu kolom, supaya kartu tidak terjepit) */
+  .listing__controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
   .listing__panel {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: var(--space-6);
-    align-items: start;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
   }
 
-  @media (max-width: 767px) {
-    .listing__panel {
-      grid-template-columns: 1fr;
+  /* -------- Bar: pencarian + tombol -------- */
+  .listing__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+  }
+
+  .listing__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary-700);
+    border: 1.5px solid var(--color-primary-700);
+    border-radius: var(--radius-pill);
+    background: transparent;
+    cursor: pointer;
+    transition: background-color var(--motion-fast);
+  }
+
+  .listing__toggle:hover,
+  .listing__toggle[aria-expanded='true'] {
+    background: var(--color-primary-100);
+  }
+
+  /* Tombol peta hanya untuk mobile/tablet — di desktop peta sudah terlihat */
+  @media (min-width: 1024px) {
+    .listing__toggle--map {
+      display: none;
     }
   }
 
-  /* -------- Filter sidebar -------- */
+  .listing__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: var(--radius-pill);
+    background: var(--color-primary-700);
+    color: #fff;
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .listing__badge[hidden] {
+    display: none;
+  }
+
+  /* -------- Filter -------- */
   .listing__filters {
     display: flex;
     flex-direction: column;
-    gap: var(--space-5);
-    padding: var(--space-4);
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
     background: var(--color-bg-alt);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-md);
-    position: sticky;
-    top: calc(var(--nav-height) + var(--space-4));
   }
 
-  @media (max-width: 767px) {
-    .listing__filters {
-      display: none; /* disembunyikan di mobile — konten jadi prioritas */
+  /* Tertutup secara default; dibuka lewat tombol Filter */
+  .listing__filters {
+    display: none;
+  }
+
+  .listing__filters.is-open {
+    display: flex;
+  }
+
+  @media (min-width: 768px) {
+    .listing__filters.is-open {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-5) var(--space-8);
+      align-items: start;
     }
+
+    .listing__location {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .listing__filters {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-5) var(--space-6);
+    }
+  }
+
+  .listing__location {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-ink);
+  }
+
+  .listing__location svg {
+    color: var(--color-primary-500);
+    flex: none;
+  }
+
+  .listing__reset-link {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary-700);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .listing__reset-link[hidden] {
+    display: none;
   }
 
   .listing__filter-group {
@@ -423,64 +641,88 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
     border: none;
     padding: 0;
     margin: 0;
+    min-width: 0;
   }
 
   .listing__filter-label {
+    padding: 0;
     font-size: var(--text-xs);
     font-weight: var(--font-weight-bold);
     color: var(--color-ink-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    display: flex;
-    align-items: center;
-    gap: var(--space-1);
   }
 
-  .listing__radio-group {
+  .listing__chips {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: var(--space-2);
   }
 
-  .listing__radio {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--text-sm);
-    color: var(--color-ink);
+  /* Radio disembunyikan secara visual (tetap bisa difokus & dibaca screen reader) */
+  .listing__chip {
+    position: relative;
     cursor: pointer;
   }
 
-  .listing__radio input[type="radio"] {
-    accent-color: var(--color-primary-700);
-    width: 14px;
-    height: 14px;
+  .listing__chip input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
     cursor: pointer;
   }
 
-  .listing__select {
-    padding: var(--space-2) var(--space-3);
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
+  .listing__chip span {
+    display: inline-block;
+    padding: 6px var(--space-3);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-medium);
     color: var(--color-ink);
     background: var(--color-bg);
     border: 1.5px solid var(--color-border);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    outline: none;
+    border-radius: var(--radius-pill);
+    line-height: 1.3;
+    transition:
+      background-color var(--motion-fast) var(--easing-standard),
+      border-color var(--motion-fast) var(--easing-standard),
+      color var(--motion-fast) var(--easing-standard);
   }
 
-  .listing__select:focus {
+  .listing__chip:hover span {
+    border-color: var(--color-border-strong);
+  }
+
+  .listing__chip input:checked + span {
+    background: var(--color-primary-700);
     border-color: var(--color-primary-700);
+    color: #fff;
   }
 
-  .listing__search-wrap {
+  .listing__chip input:focus-visible + span {
+    outline: 2px solid var(--color-primary-700);
+    outline-offset: 2px;
+  }
+
+  /* -------- Pencarian -------- */
+  .listing__search {
     position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1 1 240px;
+    max-width: 480px;
+  }
+
+  .listing__search svg {
+    position: absolute;
+    left: var(--space-3);
+    color: var(--color-ink-muted);
+    pointer-events: none;
   }
 
   .listing__search-input {
     width: 100%;
-    padding: var(--space-2) var(--space-3);
+    padding: var(--space-2) var(--space-3) var(--space-2) var(--space-10);
     font-family: var(--font-body);
     font-size: var(--text-sm);
     color: var(--color-ink);
@@ -517,12 +759,28 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
     color: var(--color-ink);
   }
 
+  .listing__sort {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .listing__sort-label {
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+  }
+
   .listing__sort-select {
-    padding: var(--space-1) var(--space-3);
+    appearance: none;
+    -webkit-appearance: none;
+    padding: var(--space-1) var(--space-8) var(--space-1) var(--space-3);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%235c6b67' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--space-3) center;
     font-family: var(--font-body);
     font-size: var(--text-sm);
     color: var(--color-ink);
-    background: var(--color-bg-alt);
+    background-color: var(--color-bg-alt);
     border: 1.5px solid var(--color-border);
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -533,33 +791,7 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
     border-color: var(--color-primary-700);
   }
 
-  /* Toggle peta (mobile only) */
-  .listing__map-toggle {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2) var(--space-4);
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-primary-700);
-    border: 1.5px solid var(--color-primary-700);
-    border-radius: var(--radius-pill);
-    background: transparent;
-    cursor: pointer;
-    transition: background-color var(--motion-fast);
-    width: fit-content;
-  }
-
-  .listing__map-toggle:hover {
-    background: var(--color-primary-100);
-  }
-
-  @media (min-width: 1024px) {
-    .listing__map-toggle {
-      display: none;
-    }
-  }
+  /* Toggle peta: lihat .listing__toggle */
 
   /* Food grid */
   .listing__grid {
@@ -603,24 +835,56 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
     background: var(--color-primary-100);
   }
 
-  /* -------- Peta desktop (sticky) -------- */
-  .listing__map-desktop {
+  /* -------- Peta desktop (diam, tidak ikut scroll) -------- */
+  .listing__map-col {
     display: none;
-    position: sticky;
-    top: calc(var(--nav-height) + var(--space-4));
-    height: calc(100vh - var(--nav-height) - var(--space-8));
+    flex-direction: column;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+
+  @media (min-width: 1024px) {
+    .listing__map-col {
+      display: flex;
+    }
+  }
+
+  /* Sejajar dengan baris "Makanan Tersedia" di kolom kiri */
+  .listing__map-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: 34px;
+  }
+
+  .listing__map-title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-ink);
+  }
+
+  .listing__map-hint {
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+  }
+
+  .listing__map-desktop {
+    position: relative;
+    flex: 1;
+    min-height: 460px;
     border-radius: var(--radius-md);
     overflow: hidden;
   }
 
-  @media (min-width: 1024px) {
-    .listing__map-desktop {
-      display: block;
-    }
-  }
-
+  /* Panel mengisi penuh area peta (tinggi mengikuti kolom kartu) */
   .listing__map-desktop :global(.map-panel) {
-    height: 100%;
+    position: absolute;
+    inset: 0;
+    height: auto;
   }
 
   .listing__map-desktop :global(.map-panel__map) {
@@ -693,6 +957,11 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
     padding: var(--space-4);
   }
 
+  .listing__map-sheet-content :global(.map-panel__map) {
+    aspect-ratio: unset;
+    height: clamp(300px, 55vh, 480px);
+  }
+
   /* Overlay behind bottom sheet */
   .listing__map-overlay {
     display: none;
@@ -709,144 +978,213 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
 
 <script>
   // ============================================================
-  // Filter makanan client-side (vanilla JS + dummy data)
+  // Filter, pencarian & urutan makanan (client-side, data dummy)
   // ============================================================
 
-  interface FoodItem {
-    id: string;
+  interface FilterState {
+    price: string;
+    distance: string;
     category: string;
-    price: number;
-    distance: number;
-    [key: string]: unknown;
+    pickup: string;
+    search: string;
   }
+
+  const DEFAULTS: FilterState = {
+    price: 'all',
+    distance: 'all',
+    category: 'all',
+    pickup: 'all',
+    search: '',
+  };
+
+  // Rentang waktu pickup dalam menit sejak 00:00
+  const PICKUP_RANGES: Record<string, [number, number]> = {
+    morning: [7 * 60, 12 * 60],
+    afternoon: [12 * 60, 17 * 60],
+    evening: [17 * 60, 22 * 60],
+  };
 
   const grid = document.getElementById('food-grid') as HTMLElement;
   const emptyState = document.getElementById('food-empty') as HTMLElement;
   const countEl = document.getElementById('count-num') as HTMLElement;
+  const searchInput = document.getElementById('listing-search') as HTMLInputElement | null;
+  const searchForm = document.getElementById('listing-search-form') as HTMLFormElement | null;
+  const sortSelect = document.getElementById('sort-select') as HTMLSelectElement | null;
+  const filterToggle = document.getElementById('filter-toggle');
+  const filterPanel = document.getElementById('listing-filters');
+  const filterBadge = document.getElementById('filter-badge');
+  const resetButtons = document.querySelectorAll<HTMLElement>('[data-reset-filters]');
+  const cards = Array.from(grid.querySelectorAll<HTMLElement>('.food-card'));
+  const categoryButtons = Array.from(
+    document.querySelectorAll<HTMLElement>('.category-icon[data-category]')
+  );
 
-  // State filter aktif
-  const activeFilters: Record<string, string> = {
-    price: 'all',
-    distance: 'all',
-    category: 'all',
-    search: '',
+  const state: FilterState = { ...DEFAULTS };
+  let sortKey = 'nearest';
+
+  const toMinutes = (value?: string) => {
+    const [h, m] = (value ?? '0:0').split(':').map(Number);
+    return (h || 0) * 60 + (m || 0);
   };
+  const num = (el: HTMLElement, key: string) => parseFloat(el.dataset[key] ?? '0');
 
-  function applyFilters() {
-    const cards = Array.from(grid.querySelectorAll('.food-card')) as HTMLElement[];
+  function matches(card: HTMLElement): boolean {
+    const price = num(card, 'price');
+    const distance = num(card, 'distance');
+    const text = `${card.querySelector('.food-card__name')?.textContent ?? ''} ${
+      card.querySelector('.food-card__store')?.textContent ?? ''
+    }`.toLowerCase();
+
+    if (state.category !== 'all' && card.dataset.category !== state.category) return false;
+
+    switch (state.price) {
+      case 'under-5k': if (price >= 5000) return false; break;
+      case '5k-10k': if (price < 5000 || price > 10000) return false; break;
+      case '10k-20k': if (price < 10000 || price > 20000) return false; break;
+      case 'above-20k': if (price <= 20000) return false; break;
+    }
+
+    switch (state.distance) {
+      case '1km': if (distance >= 1) return false; break;
+      case '1-2km': if (distance < 1 || distance > 2) return false; break;
+      case '2-5km': if (distance < 2 || distance > 5) return false; break;
+    }
+
+    // Pickup: cocok bila jendela pengambilan makanan beririsan dengan rentang yang dipilih
+    const range = PICKUP_RANGES[state.pickup];
+    if (range) {
+      const start = toMinutes(card.dataset.pickupStart);
+      const end = toMinutes(card.dataset.pickupEnd);
+      if (!(start < range[1] && end > range[0])) return false;
+    }
+
+    if (state.search && !text.includes(state.search)) return false;
+    return true;
+  }
+
+  function sortCards() {
+    const sorted = [...cards].sort((a, b) => {
+      if (sortKey === 'discount') return num(b, 'discount') - num(a, 'discount');
+      if (sortKey === 'price') return num(a, 'price') - num(b, 'price');
+      return num(a, 'distance') - num(b, 'distance');
+    });
+    sorted.forEach((card) => grid.appendChild(card));
+  }
+
+  function syncControls() {
+    // Radio chip
+    (['price', 'distance', 'category', 'pickup'] as const).forEach((key) => {
+      document
+        .querySelectorAll<HTMLInputElement>(`input[data-filter="${key}"]`)
+        .forEach((input) => {
+          input.checked = input.value === state[key];
+        });
+    });
+
+    // Ikon kategori di atas: hanya ikon kategori aktif yang "terpilih"
+    categoryButtons.forEach((btn) => {
+      const active = btn.dataset.category === state.category;
+      btn.classList.toggle('category-icon--selected', active);
+      btn.setAttribute('aria-pressed', String(active));
+    });
+
+    if (searchInput && searchInput.value.trim().toLowerCase() !== state.search) {
+      searchInput.value = state.search;
+    }
+
+    // Jumlah filter aktif → badge & tombol reset
+    const active = (Object.keys(DEFAULTS) as (keyof FilterState)[]).filter(
+      (key) => state[key] !== DEFAULTS[key]
+    ).length;
+    if (filterBadge) {
+      filterBadge.textContent = String(active);
+      filterBadge.hidden = active === 0;
+    }
+    resetButtons.forEach((btn) => {
+      if (btn.classList.contains('listing__reset-link')) btn.hidden = active === 0;
+    });
+  }
+
+  function update() {
     let visible = 0;
-
     cards.forEach((card) => {
-      const category = card.dataset.category ?? '';
-      const price = parseInt(card.dataset.price ?? '0', 10);
-      const distance = parseFloat(card.dataset.distance ?? '0');
-      const name = card.querySelector('.food-card__name')?.textContent?.toLowerCase() ?? '';
-      const store = card.querySelector('.food-card__store')?.textContent?.toLowerCase() ?? '';
-
-      let show = true;
-
-      // Filter kategori
-      if (activeFilters.category !== 'all' && category !== activeFilters.category) show = false;
-
-      // Filter harga
-      if (show) {
-        switch (activeFilters.price) {
-          case 'under-5k': if (price >= 5000) show = false; break;
-          case '5k-10k': if (price < 5000 || price > 10000) show = false; break;
-          case '10k-20k': if (price < 10000 || price > 20000) show = false; break;
-          case 'above-20k': if (price <= 20000) show = false; break;
-        }
-      }
-
-      // Filter jarak
-      if (show) {
-        switch (activeFilters.distance) {
-          case '1km': if (distance >= 1) show = false; break;
-          case '1-2km': if (distance < 1 || distance > 2) show = false; break;
-          case '2-5km': if (distance < 2 || distance > 5) show = false; break;
-        }
-      }
-
-      // Filter search
-      if (show && activeFilters.search) {
-        const q = activeFilters.search;
-        if (!name.includes(q) && !store.includes(q)) show = false;
-      }
-
+      const show = matches(card);
       card.style.display = show ? '' : 'none';
       if (show) visible++;
     });
 
+    sortCards();
     countEl.textContent = String(visible);
     emptyState.style.display = visible === 0 ? 'flex' : 'none';
     grid.style.display = visible === 0 ? 'none' : '';
+    syncControls();
+
+    // Kabari peta supaya titik mengikuti daftar
+    const detail = {
+      visibleIds: cards.filter((c) => c.style.display !== 'none').map((c) => c.dataset.id ?? ''),
+      ...state,
+    };
+    (window as any).__safoFilter = detail;
+    window.dispatchEvent(new CustomEvent('safo:filter', { detail }));
   }
 
-  // Radio filters
-  document.querySelectorAll('input[data-filter]').forEach((input) => {
-    input.addEventListener('change', (e) => {
-      const target = e.target as HTMLInputElement;
-      activeFilters[target.dataset.filter!] = target.value;
-      applyFilters();
+  // Chip filter
+  document.querySelectorAll<HTMLInputElement>('input[data-filter]').forEach((input) => {
+    input.addEventListener('change', () => {
+      state[input.dataset.filter as 'price' | 'distance' | 'category' | 'pickup'] = input.value;
+      update();
     });
   });
 
-  // Search filter
-  const searchInput = document.querySelector('.listing__search-input') as HTMLInputElement | null;
-  searchInput?.addEventListener('input', (e) => {
-    activeFilters.search = (e.target as HTMLInputElement).value.toLowerCase().trim();
-    applyFilters();
+  // Pencarian di panel filter (langsung memfilter saat mengetik)
+  searchInput?.addEventListener('input', () => {
+    state.search = searchInput.value.toLowerCase().trim();
+    update();
   });
+  searchForm?.addEventListener('submit', (e) => e.preventDefault());
 
-  // Category icons filter (dari section atas)
-  document.querySelectorAll('[data-category]').forEach((icon) => {
-    icon.addEventListener('click', () => {
-      const cat = (icon as HTMLElement).dataset.category ?? 'all';
-
-      // Update visual state icons
-      document.querySelectorAll('[data-category]').forEach((i) => {
-        i.setAttribute('aria-pressed', 'false');
-        i.classList.remove('category-icon--selected');
-      });
-      icon.setAttribute('aria-pressed', 'true');
-      icon.classList.add('category-icon--selected');
-
-      // Sync filter
-      activeFilters.category = cat;
-
-      // Juga update radio filter
-      const radio = document.querySelector(`input[name="filter-category"][value="${cat}"]`) as HTMLInputElement | null;
-      if (radio) {
-        radio.checked = true;
-      } else {
-        const allRadio = document.querySelector('input[name="filter-category"][value="all"]') as HTMLInputElement | null;
-        if (allRadio) allRadio.checked = true;
-      }
-
-      applyFilters();
+  // Ikon kategori — klik lagi pada kategori yang sama untuk kembali ke "Semua"
+  categoryButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.category ?? 'all';
+      state.category = state.category === cat ? 'all' : cat;
+      update();
     });
   });
 
-  // Reset filters
-  document.getElementById('reset-filters')?.addEventListener('click', () => {
-    activeFilters.price = 'all';
-    activeFilters.distance = 'all';
-    activeFilters.category = 'all';
-    activeFilters.search = '';
-
-    document.querySelectorAll('input[name="filter-price"]').forEach((r: Element) => {
-      (r as HTMLInputElement).checked = (r as HTMLInputElement).value === 'all';
-    });
-    document.querySelectorAll('input[name="filter-distance"]').forEach((r: Element) => {
-      (r as HTMLInputElement).checked = (r as HTMLInputElement).value === 'all';
-    });
-    document.querySelectorAll('input[name="filter-category"]').forEach((r: Element) => {
-      (r as HTMLInputElement).checked = (r as HTMLInputElement).value === 'all';
-    });
-
-    if (searchInput) searchInput.value = '';
-    applyFilters();
+  // Urutan
+  sortSelect?.addEventListener('change', () => {
+    sortKey = sortSelect.value;
+    update();
   });
+
+  // Reset
+  resetButtons.forEach((btn) =>
+    btn.addEventListener('click', () => {
+      Object.assign(state, DEFAULTS);
+      update();
+    })
+  );
+
+  // Panel filter di mobile
+  filterToggle?.addEventListener('click', () => {
+    const open = filterToggle.getAttribute('aria-expanded') === 'true';
+    filterToggle.setAttribute('aria-expanded', String(!open));
+    filterPanel?.classList.toggle('is-open', !open);
+  });
+
+  // Pencarian dari top bar (Header.astro)
+  window.addEventListener('safo:search', (e) => {
+    state.search = ((e as CustomEvent<{ q: string }>).detail.q ?? '').toLowerCase().trim();
+    update();
+    document.getElementById('listing')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  // Dibuka lewat /?q=... (dari halaman lain atau form tanpa JS)
+  const initialQuery = new URLSearchParams(window.location.search).get('q');
+  if (initialQuery) state.search = initialQuery.toLowerCase().trim();
+
+  update();
 
   // ============================================================
   // Bottom sheet peta (mobile)
@@ -860,6 +1198,7 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
     mapToggleBtn?.setAttribute('aria-expanded', 'true');
     mapSheet?.classList.add('is-open');
     mapSheet?.setAttribute('aria-hidden', 'false');
+    mapSheet?.removeAttribute('inert');
     mapOverlay?.classList.add('is-open');
     document.body.style.overflow = 'hidden';
   }
@@ -868,6 +1207,7 @@ const sortOptions = ['Terdekat', 'Diskon Terbesar', 'Harga Terendah'];
     mapToggleBtn?.setAttribute('aria-expanded', 'false');
     mapSheet?.classList.remove('is-open');
     mapSheet?.setAttribute('aria-hidden', 'true');
+    mapSheet?.setAttribute('inert', '');
     mapOverlay?.classList.remove('is-open');
     document.body.style.overflow = '';
   }
