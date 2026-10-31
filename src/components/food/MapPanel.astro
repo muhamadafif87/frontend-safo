@@ -1,6 +1,10 @@
 ---
-// MapPanel.astro — Peta statis placeholder dengan pin dummy Surakarta
-// Desktop: sticky di kanan, Tablet: di atas, Mobile: toggle bottom sheet
+// MapPanel.astro — Peta interaktif Leaflet + OpenStreetMap
+// Desktop: sticky di kanan, Mobile: dipakai di dalam bottom sheet.
+// Data titik mitra: src/data/partners.json (dummy, nanti diganti API).
+
+import partners from '../../data/partners.json';
+import categories from '../../data/categories.json';
 
 interface Props {
   class?: string;
@@ -8,120 +12,25 @@ interface Props {
 
 const { class: className = '' } = Astro.props;
 
-// Pin dummy — posisi hardcoded sesuai wireframe (kawasan Surakarta/UNS)
-const pins = [
-  { id: 'warung-pak-budi', label: 'Warung Pak Budi', x: 54, y: 38, selected: true, discount: 50 },
-  { id: 'sofiro-bakery', label: 'Sofiro Bakery', x: 34, y: 28, selected: false, discount: 40 },
-  { id: 'fresh-juice', label: 'Fresh Juice & Salad', x: 62, y: 58, selected: false, discount: 48 },
-  { id: 'tofu-express', label: 'Tofu Express', x: 68, y: 32, selected: false, discount: 44 },
-  { id: 'kopi-nusantara', label: 'Kopi Nusantara', x: 46, y: 50, selected: false, discount: 56 },
-  { id: 'dz-donat', label: 'DZ Donat', x: 28, y: 62, selected: false, discount: 62 },
-];
+const categoryLabels: Record<string, string> = Object.fromEntries(
+  categories.map((c) => [c.id, c.label])
+);
+
+const data = partners.map((p) => ({
+  ...p,
+  categoryLabel: categoryLabels[p.category] ?? 'Lainnya',
+}));
 ---
 
-<div class={`map-panel ${className}`} id="map-panel">
-  <!-- Map area -->
-  <div class="map-panel__map" role="img" aria-label="Peta area Surakarta menampilkan lokasi merchant SAFO">
-
-    <!-- Tile peta bergaya SAFO (SVG representatif, bukan tile sungguhan) -->
-    <svg
-      class="map-panel__tile"
-      viewBox="0 0 400 300"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      preserveAspectRatio="xMidYMid slice"
-    >
-      <!-- Background -->
-      <rect width="400" height="300" fill="#e8f0e9"/>
-
-      <!-- Jalan utama (Solo - UNS) -->
-      <path d="M0 150 Q100 145 200 155 Q300 165 400 158" stroke="#fff" stroke-width="8" fill="none"/>
-      <path d="M0 150 Q100 145 200 155 Q300 165 400 158" stroke="#d4dbd4" stroke-width="6" fill="none"/>
-
-      <!-- Jalan vertikal (Jl. Ir. Sutami) -->
-      <path d="M200 0 Q205 80 198 150 Q192 220 200 300" stroke="#fff" stroke-width="7" fill="none"/>
-      <path d="M200 0 Q205 80 198 150 Q192 220 200 300" stroke="#d4dbd4" stroke-width="5" fill="none"/>
-
-      <!-- Jalan secondary -->
-      <path d="M0 80 Q80 78 160 82" stroke="#e5e9e5" stroke-width="4" fill="none"/>
-      <path d="M240 80 Q310 76 400 82" stroke="#e5e9e5" stroke-width="4" fill="none"/>
-      <path d="M280 0 Q282 100 285 200" stroke="#e5e9e5" stroke-width="4" fill="none"/>
-      <path d="M100 200 Q200 195 300 205" stroke="#e5e9e5" stroke-width="4" fill="none"/>
-      <path d="M0 230 Q80 225 140 230" stroke="#e5e9e5" stroke-width="3" fill="none"/>
-      <path d="M320 230 Q370 225 400 228" stroke="#e5e9e5" stroke-width="3" fill="none"/>
-
-      <!-- Blok kota / bangunan -->
-      <rect x="20" y="20" width="70" height="50" rx="3" fill="#d8e6d9" opacity="0.6"/>
-      <rect x="110" y="20" width="50" height="40" rx="3" fill="#d0ddd0" opacity="0.5"/>
-      <rect x="310" y="20" width="60" height="45" rx="3" fill="#d8e6d9" opacity="0.6"/>
-      <rect x="20" y="170" width="80" height="60" rx="3" fill="#d0ddd0" opacity="0.5"/>
-      <rect x="300" y="170" width="75" height="70" rx="3" fill="#d8e6d9" opacity="0.6"/>
-      <rect x="220" y="20" width="45" height="35" rx="3" fill="#d0ddd0" opacity="0.5"/>
-
-      <!-- Sungai Bengawan Solo (representatif) -->
-      <path d="M350 280 Q300 250 250 270 Q200 290 150 265 Q100 240 50 260" stroke="#aac8d4" stroke-width="14" fill="none" stroke-linecap="round"/>
-      <path d="M350 280 Q300 250 250 270 Q200 290 150 265 Q100 240 50 260" stroke="#c0d8e4" stroke-width="10" fill="none" stroke-linecap="round"/>
-
-      <!-- Label kota (tidak memakai tracked caps) -->
-      <text x="200" y="130" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#5c6b67" font-weight="500" opacity="0.8">Universitas Sebelas Maret</text>
-      <text x="60" y="100" text-anchor="middle" font-size="9" font-family="sans-serif" fill="#7a8a86" opacity="0.7">Laweyan</text>
-      <text x="320" y="110" text-anchor="middle" font-size="9" font-family="sans-serif" fill="#7a8a86" opacity="0.7">Surakarta</text>
-      <text x="70" y="240" text-anchor="middle" font-size="9" font-family="sans-serif" fill="#7a8a86" opacity="0.7">Kadipiro</text>
-      <text x="350" y="240" text-anchor="middle" font-size="9" font-family="sans-serif" fill="#7a8a86" opacity="0.7">Mojosongo</text>
-
-      <!-- Overlay brand ringan -->
-      <rect width="400" height="300" fill="url(#brand-overlay)" opacity="0.08"/>
-      <defs>
-        <linearGradient id="brand-overlay" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#12403a"/>
-          <stop offset="100%" stop-color="#2f7a5c"/>
-        </linearGradient>
-      </defs>
-    </svg>
-
-    <!-- Pin merchant dummy -->
-    {pins.map((pin) => (
-      <button
-        class={`map-panel__pin ${pin.selected ? 'map-panel__pin--selected' : ''}`}
-        style={`left: ${pin.x}%; top: ${pin.y}%;`}
-        aria-label={`${pin.label}, diskon ${pin.discount}%`}
-        data-merchant={pin.id}
-        type="button"
-      >
-        {pin.selected ? (
-          <span class="map-panel__pin-bubble">
-            <span class="map-panel__pin-discount">-{pin.discount}%</span>
-            <span class="map-panel__pin-name">{pin.label}</span>
-          </span>
-        ) : (
-          <svg width="20" height="24" viewBox="0 0 20 24" fill="none" aria-hidden="true">
-            <path d="M10 0C4.477 0 0 4.477 0 10c0 7.5 10 14 10 14S20 17.5 20 10C20 4.477 15.523 0 10 0z" fill="var(--color-primary-700)"/>
-            <circle cx="10" cy="10" r="3.5" fill="#fff"/>
-          </svg>
-        )}
-      </button>
-    ))}
-
-    <!-- Kontrol zoom (UI saja, tidak fungsional) -->
-    <div class="map-panel__controls" aria-hidden="true">
-      <button class="map-panel__zoom" type="button" tabindex="-1" aria-hidden="true">+</button>
-      <button class="map-panel__zoom" type="button" tabindex="-1" aria-hidden="true">−</button>
-    </div>
-
-    <!-- Watermark peta -->
-    <div class="map-panel__watermark" aria-hidden="true">
-      <svg width="14" height="14" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-        <circle cx="14" cy="14" r="14" fill="var(--color-primary-700)" opacity="0.3"/>
-      </svg>
-      <span>SAFO Maps</span>
-    </div>
-  </div>
+<div class={`map-panel ${className}`} data-map data-partners={JSON.stringify(data)}>
+  <div
+    class="map-panel__map"
+    role="region"
+    aria-label="Peta lokasi mitra SAFO di sekitar Surakarta"
+  ></div>
 </div>
 
-<!-- Mobile toggle button (di luar map-panel, dirender oleh halaman) -->
-
 <style>
-  /* -------- Panel -------- */
   .map-panel {
     width: 100%;
     background: var(--color-border);
@@ -132,12 +41,13 @@ const pins = [
     position: relative;
   }
 
-  /* -------- Map container -------- */
   .map-panel__map {
     position: relative;
+    z-index: 0; /* kurung stacking context Leaflet agar tidak menimpa header/modal */
     width: 100%;
     aspect-ratio: 4/3;
     overflow: hidden;
+    background: #e8f0e9;
   }
 
   @media (min-width: 1024px) {
@@ -147,129 +57,338 @@ const pins = [
       min-height: 480px;
     }
   }
+</style>
 
-  .map-panel__tile {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+<!-- Style untuk elemen yang dibuat Leaflet (di luar scope Astro) -->
+<style is:global>
+  .map-panel .leaflet-container {
+    font-family: var(--font-body);
   }
 
-  /* -------- Pin merchant -------- */
-  .map-panel__pin {
-    position: absolute;
-    transform: translate(-50%, -100%);
-    cursor: pointer;
+  /* ---------- Pin ---------- */
+  .safo-pin {
     background: none;
-    border: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 2;
+    border: 0;
+  }
+
+  .safo-pin__inner {
+    display: block;
+    width: 28px;
+    height: 34px;
+    transform-origin: 50% 100%;
+    filter: drop-shadow(0 2px 3px rgb(11 46 42 / 0.3));
     transition: transform var(--motion-fast) var(--easing-standard);
   }
 
-  .map-panel__pin:hover,
-  .map-panel__pin:focus-visible {
-    transform: translate(-50%, -100%) scale(1.15);
-    z-index: 10;
+  .safo-pin:hover .safo-pin__inner,
+  .safo-pin:focus-visible .safo-pin__inner {
+    transform: scale(1.18);
   }
 
-  .map-panel__pin:focus-visible {
-    outline: 2px solid var(--color-primary-700);
-    outline-offset: 4px;
-    border-radius: var(--radius-xs);
+  .safo-pin:focus-visible {
+    outline: none;
   }
 
-  /* Pin terpilih — bubble dengan nama */
-  .map-panel__pin--selected {
-    z-index: 5;
+  .safo-pin:focus-visible .safo-pin__inner {
+    filter: drop-shadow(0 0 0 var(--color-primary-700)) drop-shadow(0 0 3px var(--color-primary-500));
   }
 
-  .map-panel__pin-bubble {
+  /* ---------- Popup ---------- */
+  .safo-popup .leaflet-popup-content-wrapper {
+    background: var(--color-bg-alt);
+    color: var(--color-ink);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-interactive);
+    /* Padding di sini (bukan margin di isi), karena margin vertikal isi popup runtuh keluar kartu */
+    padding: var(--space-5) var(--space-10) var(--space-5) var(--space-5);
+  }
+
+  .safo-popup .leaflet-popup-content {
+    margin: 0;
+    font-family: var(--font-body);
+    line-height: var(--leading-snug);
+  }
+
+  .safo-popup .leaflet-popup-tip {
+    background: var(--color-bg-alt);
+    box-shadow: none;
+  }
+
+  .safo-popup a.leaflet-popup-close-button {
+    top: var(--space-3);
+    right: var(--space-3);
+    width: 22px;
+    height: 22px;
+    font-size: 20px;
+    line-height: 22px;
+    color: var(--color-ink-muted);
+  }
+
+  .safo-popup a.leaflet-popup-close-button:hover {
+    color: var(--color-ink);
+  }
+
+  .safo-popup__head {
     display: flex;
-    flex-direction: column;
     align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
+  .safo-popup__title {
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-900);
+  }
+
+  .safo-popup__badge {
+    display: inline-block;
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-pill);
     background: var(--color-primary-700);
     color: #fff;
-    border-radius: var(--radius-sm);
-    padding: var(--space-2) var(--space-3);
-    gap: 2px;
-    box-shadow: var(--shadow-interactive);
-    position: relative;
-  }
-
-  /* Arrow down dari bubble */
-  .map-panel__pin-bubble::after {
-    content: '';
-    position: absolute;
-    bottom: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: var(--color-primary-700);
-    border-bottom: 0;
-  }
-
-  .map-panel__pin-discount {
-    font-size: 11px;
-    font-weight: 700;
-    font-family: var(--font-body);
-    line-height: 1;
-    color: var(--color-accent);
-  }
-
-  .map-panel__pin-name {
-    font-size: 11px;
-    font-weight: 600;
-    font-family: var(--font-body);
-    white-space: nowrap;
-    line-height: 1;
-  }
-
-  /* -------- Controls -------- */
-  .map-panel__controls {
-    position: absolute;
-    bottom: var(--space-4);
-    right: var(--space-3);
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    z-index: 3;
-  }
-
-  .map-panel__zoom {
-    width: 30px;
-    height: 30px;
-    background: var(--color-bg-alt);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-xs);
-    font-size: 18px;
-    line-height: 1;
-    color: var(--color-ink-muted);
-    cursor: default;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-body);
-    box-shadow: var(--shadow-rest);
-  }
-
-  /* -------- Watermark -------- */
-  .map-panel__watermark {
-    position: absolute;
-    bottom: var(--space-2);
-    left: var(--space-3);
-    display: flex;
-    align-items: center;
-    gap: 4px;
     font-size: var(--text-xs);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.3;
+  }
+
+  .safo-popup .safo-popup__category {
+    margin: var(--space-3) 0 0;
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-primary-500);
+  }
+
+  .safo-popup .safo-popup__address {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-1);
+    margin: var(--space-3) 0 0;
+    font-size: var(--text-xs);
+    line-height: var(--leading-snug);
     color: var(--color-ink-muted);
-    background: rgb(255 255 255 / 0.8);
-    padding: 2px var(--space-2);
-    border-radius: var(--radius-xs);
-    font-family: var(--font-body);
-    z-index: 3;
+  }
+
+  .safo-popup__address svg {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    margin-top: 1px;
+    color: var(--color-ink-muted);
+  }
+
+  /* ---------- Kontrol ---------- */
+  .map-panel .leaflet-bar a {
+    color: var(--color-ink-muted);
+  }
+
+  .map-panel .leaflet-control-attribution {
+    font-size: 10px;
   }
 </style>
+
+<script>
+  import L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+
+  interface Partner {
+    id: string;
+    foodId?: string;
+    name: string;
+    category: string;
+    categoryLabel: string;
+    discount: number;
+    address: string;
+    lat: number;
+    lng: number;
+  }
+
+  interface FilterDetail {
+    visibleIds: string[];
+    price: string;
+    distance: string;
+    category: string;
+    pickup: string;
+    search: string;
+  }
+
+  const TILE_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+  const TILE_ATTRIBUTION =
+    '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>';
+
+  const PIN_SVG = `
+    <span class="safo-pin__inner">
+      <svg width="28" height="34" viewBox="0 0 20 24" fill="none" aria-hidden="true">
+        <path d="M10 0C4.477 0 0 4.477 0 10c0 7.5 10 14 10 14S20 17.5 20 10C20 4.477 15.523 0 10 0z" fill="#12403a"/>
+        <circle cx="10" cy="10" r="3.5" fill="#fff"/>
+      </svg>
+    </span>`;
+
+  const ADDRESS_ICON = `
+    <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M10 18s6-5.2 6-9.5a6 6 0 10-12 0C4 12.8 10 18 10 18z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      <circle cx="10" cy="8.5" r="2" stroke="currentColor" stroke-width="1.5"/>
+    </svg>`;
+
+  function escapeHtml(value: string): string {
+    return value
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function popupHtml(p: Partner): string {
+    return `
+      <div class="safo-popup__head">
+        <h3 class="safo-popup__title">${escapeHtml(p.name)}</h3>
+        <span class="safo-popup__badge">-${p.discount}%</span>
+      </div>
+      <p class="safo-popup__category">${escapeHtml(p.categoryLabel)}</p>
+      <p class="safo-popup__address">${ADDRESS_ICON}<span>${escapeHtml(p.address)}</span></p>`;
+  }
+
+  function initMap(container: HTMLElement, partners: Partner[]): L.Map & { refit?: () => void } {
+    const canHover = window.matchMedia('(hover: hover)').matches;
+
+    const map: L.Map & { refit?: () => void } = L.map(container, {
+      zoomControl: false,
+      scrollWheelZoom: false, // supaya scroll halaman tidak "tertelan" peta
+    });
+
+    L.control.zoom({ position: 'topright' }).addTo(map);
+    map.attributionControl.setPrefix(false);
+
+    L.tileLayer(TILE_URL, { maxZoom: 19, attribution: TILE_ATTRIBUTION }).addTo(map);
+
+    // Scroll-zoom hanya aktif setelah peta diklik, mati lagi saat kursor keluar
+    map.on('click focus', () => map.scrollWheelZoom.enable());
+    map.on('mouseout blur', () => map.scrollWheelZoom.disable());
+
+    const layer = L.layerGroup().addTo(map);
+    const items: { partner: Partner; marker: L.Marker }[] = [];
+    let pinned: L.Popup | null = null; // popup yang dikunci lewat klik/tap
+
+    partners.forEach((partner) => {
+      const marker = L.marker([partner.lat, partner.lng], {
+        icon: L.divIcon({
+          className: 'safo-pin',
+          html: PIN_SVG,
+          iconSize: [28, 34],
+          iconAnchor: [14, 34],
+        }),
+        alt: `${partner.name}, diskon ${partner.discount}%`,
+        riseOnHover: true,
+      });
+
+      const popup = L.popup({
+        className: 'safo-popup',
+        offset: [0, -30],
+        minWidth: 230,
+        maxWidth: 300,
+        autoPanPadding: [24, 24],
+        closeButton: true,
+      }).setContent(popupHtml(partner));
+
+      // autoPan: peta hanya bergeser saat popup dikunci lewat klik, bukan saat sekadar hover
+      const open = (autoPan: boolean) => {
+        popup.options.autoPan = autoPan;
+        popup.setLatLng(marker.getLatLng()).openOn(map);
+      };
+
+      // Desktop: tampil saat kursor di atas titik (kecuali ada popup yang dikunci)
+      marker.on('mouseover', () => {
+        if (canHover && !pinned) open(false);
+      });
+      marker.on('mouseout', () => {
+        if (canHover && pinned !== popup) map.closePopup(popup);
+      });
+      // Klik / sentuh / Enter: kunci popup supaya tidak hilang saat kursor pindah
+      marker.on('click', () => {
+        pinned = popup;
+        open(true);
+      });
+
+      layer.addLayer(marker);
+      items.push({ partner, marker });
+    });
+
+    map.on('popupclose', (e) => {
+      if (pinned === e.popup) pinned = null;
+    });
+
+    // Pas-kan tampilan ke titik yang terlihat. Selama pengguna belum menggeser/zoom sendiri,
+    // tampilan di-fit ulang saat ukuran container berubah (mis. layout baru selesai dihitung).
+    let fitting = false;
+    let userMoved = false;
+
+    map.on('movestart zoomstart', () => {
+      if (!fitting) userMoved = true;
+    });
+
+    const fit = (animate = false) => {
+      const points = items
+        .filter(({ marker }) => layer.hasLayer(marker))
+        .map(({ partner }) => [partner.lat, partner.lng] as [number, number]);
+      if (points.length === 0) return;
+      fitting = true;
+      map.fitBounds(L.latLngBounds(points), { padding: [48, 48], maxZoom: 16, animate });
+      fitting = false;
+    };
+
+    fit();
+    map.refit = () => {
+      if (!userMoved) fit();
+    };
+
+    // Sinkron dengan filter daftar makanan (event dikirim dari index.astro)
+    const applyFilter = (d: FilterDetail) => {
+      const neutral =
+        d.price === 'all' && d.distance === 'all' && d.pickup === 'all' && !d.search;
+
+      map.closePopup();
+      items.forEach(({ partner, marker }) => {
+        const show = partner.foodId
+          ? d.visibleIds.includes(partner.foodId)
+          : neutral && (d.category === 'all' || d.category === partner.category);
+        if (show) layer.addLayer(marker);
+        else layer.removeLayer(marker);
+      });
+      userMoved = false;
+      fit(true);
+    };
+
+    window.addEventListener('safo:filter', (event) =>
+      applyFilter((event as CustomEvent<FilterDetail>).detail)
+    );
+
+    // Filter yang sudah aktif sebelum peta selesai dibuat (mis. dibuka lewat /?q=...)
+    const initial = (window as any).__safoFilter as FilterDetail | undefined;
+    if (initial) applyFilter(initial);
+
+    return map;
+  }
+
+  // Peta dibuat saat container sudah punya ukuran (panel desktop disembunyikan di mobile),
+  // dan ukurannya dihitung ulang otomatis kalau container berubah.
+  document.querySelectorAll<HTMLElement>('[data-map]').forEach((panel) => {
+    const container = panel.querySelector<HTMLElement>('.map-panel__map');
+    if (!container) return;
+
+    const partners: Partner[] = JSON.parse(panel.dataset.partners ?? '[]');
+    let map: (L.Map & { refit?: () => void }) | null = null;
+
+    new ResizeObserver(() => {
+      const ready = container.clientWidth >= 120 && container.clientHeight >= 120;
+      if (!map) {
+        if (ready) map = initMap(container, partners);
+      } else {
+        map.invalidateSize();
+        map.refit?.();
+      }
+    }).observe(container);
+  });
+</script>

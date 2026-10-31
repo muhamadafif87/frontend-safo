@@ -1,0 +1,15 @@
+[
+  { "id": "warung-pak-budi", "foodId": "nasi-ayam-geprek-warung-pak-budi", "name": "Warung Pak Budi", "category": "makanan-berat", "discount": 50, "address": "Jl. Ir. Sutami No. 12, Kentingan", "lat": -7.5592, "lng": 110.8515 },
+  { "id": "sofiro-bakery", "foodId": "roti-cokelat-sofiro-bakery", "name": "Sofiro Bakery", "category": "roti-kue", "discount": 40, "address": "Jl. Kolonel Sutarto No. 7, Jebres", "lat": -7.5531, "lng": 110.8472 },
+  { "id": "fresh-juice-salad", "foodId": "salad-buah-fresh-juice-salad", "name": "Fresh Juice & Salad", "category": "camilan", "discount": 48, "address": "Jl. Ki Hajar Dewantara No. 21, Jebres", "lat": -7.5648, "lng": 110.8489 },
+  { "id": "tofu-express", "foodId": "tahu-isi-tofu-express", "name": "Tofu Express", "category": "camilan", "discount": 44, "address": "Jl. Kentingan Baru No. 5, Jebres", "lat": -7.5571, "lng": 110.8553 },
+  { "id": "kopi-nusantara", "foodId": "es-kopi-susu-kopi-nusantara", "name": "Kopi Nusantara", "category": "minuman", "discount": 56, "address": "Jl. Ir. Sutami No. 36, Kentingan", "lat": -7.5609, "lng": 110.8501 },
+  { "id": "dz-donat", "foodId": "donat-kentang-dz-donat", "name": "DZ Donat", "category": "roti-kue", "discount": 62, "address": "Jl. Mawar No. 9, Jebres", "lat": -7.5684, "lng": 110.8461 },
+
+  { "id": "soto-bu-tini", "name": "Soto Bu Tini", "category": "makanan-berat", "discount": 35, "address": "Jl. Ir. Sutami No. 48, Kentingan", "lat": -7.5553, "lng": 110.8498 },
+  { "id": "kue-basah-mbak-sari", "name": "Kue Basah Mbak Sari", "category": "roti-kue", "discount": 45, "address": "Jl. Kolonel Sutarto No. 33, Jebres", "lat": -7.5518, "lng": 110.8531 },
+  { "id": "es-teh-solo-segar", "name": "Es Teh Solo Segar", "category": "minuman", "discount": 52, "address": "Jl. Ki Hajar Dewantara No. 4, Jebres", "lat": -7.5627, "lng": 110.8544 },
+  { "id": "gorengan-mas-joko", "name": "Gorengan Mas Joko", "category": "camilan", "discount": 38, "address": "Jl. Kentingan Baru No. 18, Jebres", "lat": -7.5586, "lng": 110.8579 },
+  { "id": "nasi-liwet-bu-wongso", "name": "Nasi Liwet Bu Wongso", "category": "makanan-berat", "discount": 58, "address": "Jl. Mawar No. 22, Jebres", "lat": -7.5661, "lng": 110.8517 },
+  { "id": "warung-buah-segar", "name": "Warung Buah Segar", "category": "lainnya", "discount": 42, "address": "Jl. Surya No. 3, Jebres", "lat": -7.5545, "lng": 110.8442 }
+]

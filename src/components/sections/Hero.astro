@@ -1,19 +1,11 @@
 ---
 // Hero.astro — Section hero Food Nearby
 // Desktop: headline kiri + product shot kanan
-// Mobile: foto lebih kecil di atas, headline + search full-width di bawah
+// Mobile: foto lebih kecil di atas, headline + CTA di bawah
 // Animasi utama: product shot reveal scale+fade, 400ms, sekali saja
 
-import Input from '../ui/Input.astro';
-import Chip from '../ui/Chip.astro';
+import Button from '../ui/Button.astro';
 
-const chips = [
-  { label: 'Semua', value: 'all', selected: true },
-  { label: '< 5K', value: 'under-5k', selected: false },
-  { label: '< 10K', value: 'under-10k', selected: false },
-  { label: 'Terdekat', value: 'nearest', selected: false },
-  { label: 'Kategori ⌄', value: 'category', selected: false },
-];
 ---
 
 <section class="hero" aria-label="Temukan makanan surplus di sekitarmu">
@@ -44,26 +36,9 @@ const chips = [
         mengurangi food waste.
       </p>
 
-      <!-- Search bar -->
-      <div class="hero__search animate-in animate-in--subheadline">
-        <Input
-          placeholder="Cari lokasi (contoh: UNS, Solo)"
-          id="hero-search"
-          name="location"
-          aria-label="Cari lokasi untuk menemukan makanan surplus di sekitarmu"
-        />
-      </div>
-
-      <!-- Filter chips -->
-      <div class="hero__chips animate-in animate-in--subheadline" role="group" aria-label="Filter makanan">
-        {chips.map((chip) => (
-          <Chip
-            label={chip.label}
-            value={chip.value}
-            selected={chip.selected}
-            data-filter="hero"
-          />
-        ))}
+      <!-- CTA: filter & pencarian ada di section makanan di bawah -->
+      <div class="hero__actions animate-in animate-in--subheadline">
+        <Button href="#listing" size="lg" hasArrow>Cari makanan terdekat</Button>
       </div>
     </div>
 
@@ -185,16 +160,7 @@ const chips = [
     max-width: 48ch;
   }
 
-  /* Search */
-  .hero__search {
-    max-width: 480px;
-    opacity: 1;
-  }
-
-  .hero__chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
+  .hero__actions {
     opacity: 1;
   }
 
