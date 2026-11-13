@@ -1,0 +1,104 @@
+---
+// ComingSoonLayout.astro — Halaman placeholder "Segera hadir" untuk fitur yang belum dibangun
+
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import Toast from '../components/ui/Toast.astro';
+import Button from '../components/ui/Button.astro';
+
+interface Props {
+  title: string;
+  message: string;
+  eyebrow?: string;
+  backHref?: string;
+  backLabel?: string;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  message,
+  eyebrow = 'Segera Hadir',
+  backHref = '/',
+  backLabel = 'Kembali ke beranda',
+  noindex = true,
+} = Astro.props;
+---
+
+<BaseLayout title={`${title} — SAFO`} description={message} noindex={noindex}>
+  <Fragment slot="header"><Header /></Fragment>
+
+  <section class="soon section">
+    <div class="container soon__inner">
+      <div class="soon__icon" aria-hidden="true">
+        <slot name="icon">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="14" stroke="currentColor" stroke-width="2"/>
+            <path d="M20 12v8l5 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </slot>
+      </div>
+      <p class="section-label">{eyebrow}</p>
+      <h1 class="soon__title">{title}</h1>
+      <p class="soon__message">{message}</p>
+      <div class="soon__actions">
+        <Button href={backHref} size="lg" hasArrow>{backLabel}</Button>
+        <slot name="actions" />
+      </div>
+    </div>
+  </section>
+
+  <Toast />
+  <Fragment slot="footer"><Footer /></Fragment>
+</BaseLayout>
+
+<style>
+  .soon {
+    background: var(--color-bg);
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .soon__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--space-3);
+  }
+
+  .soon__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    margin-bottom: var(--space-2);
+    border-radius: 50%;
+    background: var(--color-primary-100);
+    color: var(--color-primary-700);
+  }
+
+  .soon__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.9375rem, 4vw, 2.75rem);
+    color: var(--color-ink);
+    line-height: var(--leading-tight);
+  }
+
+  .soon__message {
+    max-width: 46ch;
+    color: var(--color-ink-muted);
+    line-height: var(--leading-loose);
+  }
+
+  .soon__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+</style>

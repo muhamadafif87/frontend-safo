@@ -1,0 +1,18 @@
+---
+import ComingSoonLayout from '../layouts/ComingSoonLayout.astro';
+import Button from '../components/ui/Button.astro';
+---
+
+<ComingSoonLayout
+  eyebrow="Error 404"
+  title="Halaman Tidak Ditemukan"
+  message="Maaf, halaman yang kamu cari tidak ada atau sudah dipindahkan. Yuk kembali dan lanjutkan mencari makanan surplus di sekitarmu."
+  backLabel="Kembali ke beranda"
+>
+  <svg slot="icon" width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <circle cx="18" cy="18" r="11" stroke="currentColor" stroke-width="2"/>
+    <path d="M26 26l9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M14 14l8 8M22 14l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+  <Button slot="actions" href="/how-it-works" variant="secondary" size="lg">Cara kerja SAFO</Button>
+</ComingSoonLayout>

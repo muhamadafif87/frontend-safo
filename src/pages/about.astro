@@ -6,39 +6,58 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/layout/Header.astro';
 import Footer from '../components/layout/Footer.astro';
 import Toast from '../components/ui/Toast.astro';
+import site from '../data/site.json';
+
+// Warna avatar per kelompok peran
+const roleColors = {
+  lead: { color: 'var(--color-primary-100)', textColor: 'var(--color-primary-700)' },
+  backend: { color: 'var(--color-cat-minum)', textColor: 'var(--color-cat-minum-icon)' },
+  frontend: { color: 'var(--color-accent-light)', textColor: 'var(--color-accent)' },
+  marketing: { color: 'var(--color-cat-camilan)', textColor: 'var(--color-cat-camilan-icon)' },
+};
 
 const team = [
   {
-    name: 'Arga Pratama',
-    role: 'Co-Founder & CEO',
-    bio: 'Passion di bidang sustainability dan teknologi pangan. 5+ tahun pengalaman di startup teknologi.',
-    avatar: 'A',
-    color: 'var(--color-primary-100)',
-    textColor: 'var(--color-primary-700)',
+    name: 'Jauhar Mufid Tamir',
+    role: 'Ketua & UI/UX Designer',
+    bio: 'Memimpin arah tim dan merancang pengalaman antarmuka SAFO.',
+    avatar: 'JM',
+    ...roleColors.lead,
   },
   {
-    name: 'Fika Novitasari',
-    role: 'Co-Founder & CPO',
-    bio: 'Ex-product manager di e-commerce terkemuka. Percaya teknologi bisa membantu UMKM tumbuh lebih cepat.',
-    avatar: 'F',
-    color: 'var(--color-accent-light)',
-    textColor: 'var(--color-accent)',
+    name: 'Muhammad Afif Aji Putra',
+    role: 'Backend Developer',
+    bio: 'Membangun sistem server, data, dan API yang menjalankan SAFO.',
+    avatar: 'MA',
+    ...roleColors.backend,
   },
   {
-    name: 'Bagas Wicaksono',
-    role: 'CTO',
-    bio: 'Full-stack engineer yang suka membangun sistem yang scalable dan mudah dipakai semua orang.',
-    avatar: 'B',
-    color: 'var(--color-cat-minum)',
-    textColor: 'var(--color-cat-minum-icon)',
+    name: 'Hesa Khansa Arka',
+    role: 'Backend Developer',
+    bio: 'Membangun sistem server, data, dan API yang menjalankan SAFO.',
+    avatar: 'HK',
+    ...roleColors.backend,
   },
   {
-    name: 'Dewi Rachmawati',
-    role: 'Head of Partnerships',
-    bio: 'Latar belakang di UMKM development dan CSR. Jembatan antara SAFO dan komunitas UMKM kuliner.',
-    avatar: 'D',
-    color: 'var(--color-cat-camilan)',
-    textColor: 'var(--color-cat-camilan-icon)',
+    name: 'Salman Abdussalam',
+    role: 'Frontend Developer',
+    bio: 'Membangun tampilan web SAFO agar cepat, rapi, dan mudah dipakai.',
+    avatar: 'SA',
+    ...roleColors.frontend,
+  },
+  {
+    name: 'Deffa Rohman Wicaksono',
+    role: 'Frontend Developer',
+    bio: 'Membangun tampilan web SAFO agar cepat, rapi, dan mudah dipakai.',
+    avatar: 'DR',
+    ...roleColors.frontend,
+  },
+  {
+    name: 'Reyhan Diandra Alvaro',
+    role: 'Marketing & Research',
+    bio: 'Meneliti kebutuhan pengguna dan UMKM, serta memperkenalkan SAFO ke komunitas.',
+    avatar: 'RD',
+    ...roleColors.marketing,
   },
 ];
 
@@ -216,20 +235,20 @@ const values = [
         </p>
 
         <div class="about-contact__methods">
-          <a href="mailto:hello@safo.id" class="about-contact__method">
+          <a href={`mailto:${site.email}`} class="about-contact__method">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
               <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/>
               <path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.2"/>
             </svg>
-            hello@safo.id
+            {site.email}
           </a>
-          <a href="https://instagram.com/safo.id" class="about-contact__method" target="_blank" rel="noopener">
+          <a href={site.instagramUrl} class="about-contact__method" target="_blank" rel="noopener noreferrer">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
               <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
               <circle cx="12" cy="12" r="5"/>
               <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
             </svg>
-            @safo.id
+            {site.instagramHandle}
           </a>
           <div class="about-contact__method about-contact__method--text">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -478,7 +497,7 @@ const values = [
   }
 
   @media (min-width: 1024px) {
-    .about-team__grid { grid-template-columns: repeat(4, 1fr); }
+    .about-team__grid { grid-template-columns: repeat(3, 1fr); }
   }
 
   .about-team-card {
@@ -502,7 +521,8 @@ const values = [
     height: 60px;
     border-radius: 50%;
     font-family: var(--font-display);
-    font-size: var(--text-2xl);
+    font-size: var(--text-lg);
+    letter-spacing: 0.02em;
     font-weight: var(--font-weight-bold);
     display: flex;
     align-items: center;
