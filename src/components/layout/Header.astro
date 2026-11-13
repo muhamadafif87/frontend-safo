@@ -6,7 +6,7 @@ import Modal from "../ui/Modal.astro";
 // Nav links, dropdown About (desktop), hamburger + drawer (mobile)
 
 const navLinks = [
-  { href: '/food-nearby', label: 'Food Nearby', id: 'food-nearby' },
+  { href: '/', label: 'Food Nearby', id: 'food-nearby' },
   { href: '/how-it-works', label: 'How It Works', id: 'how-it-works' },
   { href: '/impact', label: 'Impact', id: 'impact' },
   { href: '/for-business', label: 'For Business', id: 'for-business' },
@@ -26,7 +26,8 @@ const searchItems = foods.map((f) => ({ name: f.name, store: f.store, price: f.p
 const currentPath = Astro.url.pathname;
 
 function isActive(href: string) {
-  if (href === '/food-nearby' && currentPath === '/') return true;
+  // Food Nearby = halaman utama; halaman detail makanan (/food/...) juga dianggap bagian darinya
+  if (href === '/') return currentPath === '/' || currentPath.startsWith('/food/');
   return currentPath.startsWith(href);
 }
 ---

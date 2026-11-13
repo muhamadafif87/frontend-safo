@@ -2,6 +2,8 @@
 // Footer.astro — Footer SAFO
 // Grid 4 kolom: logo+tagline, nav, legal, social — responsive
 
+import site from '../../data/site.json';
+
 const footerNav = [
   { label: 'Food Nearby', href: '/' },
   { label: 'How It Works', href: '/how-it-works' },
@@ -19,7 +21,7 @@ const legalLinks = [
 const socialLinks = [
   {
     label: 'Instagram',
-    href: 'https://instagram.com/safo.id',
+    href: site.instagramUrl,
     icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
       <circle cx="12" cy="12" r="5"/>
@@ -28,21 +30,24 @@ const socialLinks = [
   },
   {
     label: 'TikTok',
-    href: 'https://tiktok.com/@safo.id',
+    soon: true,
+    color: '#111111',
     icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.75a8.2 8.2 0 004.79 1.53V6.84a4.85 4.85 0 01-1.02-.15z"/>
     </svg>`,
   },
   {
     label: 'YouTube',
-    href: 'https://youtube.com/@safo.id',
+    soon: true,
+    color: '#ff0000',
     icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M23.5 6.19a3.02 3.02 0 00-2.12-2.14C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.55A3.02 3.02 0 00.5 6.19C0 8.08 0 12 0 12s0 3.92.5 5.81a3.02 3.02 0 002.12 2.14C4.5 20.5 12 20.5 12 20.5s7.5 0 9.38-.55a3.02 3.02 0 002.12-2.14C24 15.92 24 12 24 12s0-3.92-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/>
     </svg>`,
   },
   {
     label: 'LinkedIn',
-    href: 'https://linkedin.com/company/safo-id',
+    soon: true,
+    color: '#0a66c2',
     icon: `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
       <circle cx="4" cy="4" r="2"/>
@@ -100,15 +105,28 @@ const socialLinks = [
         <ul class="footer__social-list" role="list">
           {socialLinks.map((social) => (
             <li>
-              <a
-                href={social.href}
-                class="footer__social-link"
-                aria-label={social.label}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Fragment set:html={social.icon} />
-              </a>
+              {social.soon ? (
+                <button
+                  type="button"
+                  class="footer__social-link"
+                  aria-label={`${social.label} — segera hadir`}
+                  aria-haspopup="dialog"
+                  data-social-soon={social.label}
+                  data-color={social.color}
+                >
+                  <Fragment set:html={social.icon} />
+                </button>
+              ) : (
+                <a
+                  href={social.href}
+                  class="footer__social-link"
+                  aria-label={`${social.label} SAFO (buka di tab baru)`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Fragment set:html={social.icon} />
+                </a>
+              )}
             </li>
           ))}
         </ul>
@@ -127,6 +145,48 @@ const socialLinks = [
     </div>
   </div>
 </footer>
+
+<!-- Pop up "Segera hadir" untuk media sosial yang belum aktif -->
+<dialog class="soon-dialog" id="social-soon" aria-labelledby="soon-title" aria-describedby="soon-desc">
+  <div class="soon-dialog__card">
+    <button type="button" class="soon-dialog__close" data-soon-close aria-label="Tutup">
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div class="soon-dialog__hero" aria-hidden="true">
+      <span class="soon-dialog__dot soon-dialog__dot--1"></span>
+      <span class="soon-dialog__dot soon-dialog__dot--2"></span>
+      <span class="soon-dialog__dot soon-dialog__dot--3"></span>
+      <div class="soon-dialog__icon-wrap">
+        <span class="soon-dialog__ring"></span>
+        <span class="soon-dialog__ring soon-dialog__ring--late"></span>
+        <span class="soon-dialog__icon" id="soon-icon"></span>
+      </div>
+    </div>
+
+    <div class="soon-dialog__body">
+      <span class="soon-dialog__badge">Segera hadir</span>
+      <h2 class="soon-dialog__title" id="soon-title">Segera hadir</h2>
+      <p class="soon-dialog__desc" id="soon-desc"></p>
+      <div class="soon-dialog__actions">
+        <a
+          class="soon-dialog__btn soon-dialog__btn--primary"
+          href={site.instagramUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Ikuti di Instagram
+          <span aria-hidden="true">→</span>
+        </a>
+        <button type="button" class="soon-dialog__btn soon-dialog__btn--ghost" data-soon-close>
+          Nanti saja
+        </button>
+      </div>
+    </div>
+  </div>
+</dialog>
 
 <style>
   .footer {
@@ -304,4 +364,285 @@ const socialLinks = [
     display: flex;
     gap: var(--space-2);
   }
+
+  /* -------- Pop up "Segera hadir" -------- */
+  .footer__social-link {
+    cursor: pointer;
+  }
+
+  .soon-dialog {
+    /* margin:auto + inset:0 wajib: reset global menghapus margin bawaan dialog sehingga tidak di tengah */
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    height: fit-content;
+    width: min(92vw, 400px);
+    max-width: none;
+    padding: 0;
+    border: none;
+    background: transparent;
+    overflow: visible;
+    color: var(--color-ink);
+  }
+
+  .soon-dialog::backdrop {
+    background: rgb(11 46 42 / 0.6);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .soon-dialog[open] {
+    animation: soon-pop 320ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  }
+
+  .soon-dialog[open]::backdrop {
+    animation: soon-fade 240ms ease-out;
+  }
+
+  .soon-dialog__card {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-bg-alt);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-modal);
+  }
+
+  .soon-dialog__close {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: #fff;
+    background: rgb(255 255 255 / 0.16);
+    cursor: pointer;
+    transition: background-color var(--motion-fast) var(--easing-standard);
+  }
+
+  .soon-dialog__close:hover {
+    background: rgb(255 255 255 / 0.3);
+  }
+
+  /* Header gradasi dengan ikon platform yang "berdenyut" */
+  .soon-dialog__hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 170px;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 20% 15%, rgb(255 255 255 / 0.14), transparent 45%),
+      linear-gradient(135deg, var(--color-primary-900), var(--color-primary-700));
+  }
+
+  .soon-dialog__dot {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--color-accent);
+    opacity: 0.85;
+    animation: soon-float 4s ease-in-out infinite;
+  }
+
+  .soon-dialog__dot--1 { width: 12px; height: 12px; top: 26px; left: 46px; }
+  .soon-dialog__dot--2 { width: 8px; height: 8px; bottom: 34px; left: 90px; background: #fff; opacity: 0.6; animation-delay: -1.3s; }
+  .soon-dialog__dot--3 { width: 14px; height: 14px; bottom: 28px; right: 52px; background: var(--color-primary-100); opacity: 0.7; animation-delay: -2.4s; }
+
+  .soon-dialog__icon-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    height: 84px;
+  }
+
+  .soon-dialog__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgb(255 255 255 / 0.55);
+    animation: soon-ring 2.4s ease-out infinite;
+  }
+
+  .soon-dialog__ring--late {
+    animation-delay: 1.2s;
+  }
+
+  .soon-dialog__icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--soon-color, var(--color-primary-700));
+    box-shadow: 0 10px 28px rgb(0 0 0 / 0.28);
+  }
+
+  .soon-dialog__icon :global(svg) {
+    width: 38px;
+    height: 38px;
+  }
+
+  .soon-dialog__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-6) var(--space-6) var(--space-6);
+    text-align: center;
+  }
+
+  .soon-dialog__badge {
+    padding: 3px var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--color-accent-light);
+    color: var(--color-accent-strong);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .soon-dialog__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    line-height: var(--leading-tight);
+    color: var(--color-ink);
+  }
+
+  .soon-dialog__desc {
+    margin: 0;
+    max-width: 32ch;
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    color: var(--color-ink-muted);
+  }
+
+  .soon-dialog__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+    width: 100%;
+    margin-top: var(--space-2);
+  }
+
+  .soon-dialog__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color var(--motion-fast) var(--easing-standard),
+      transform var(--motion-fast) var(--easing-standard);
+  }
+
+  .soon-dialog__btn--primary {
+    background: var(--color-primary-700);
+    color: #fff;
+  }
+
+  .soon-dialog__btn--primary:hover {
+    background: var(--color-primary-900);
+    transform: translateY(-1px);
+  }
+
+  .soon-dialog__btn--ghost {
+    color: var(--color-ink-muted);
+  }
+
+  .soon-dialog__btn--ghost:hover {
+    background: var(--color-border);
+    color: var(--color-ink);
+  }
+
+  .soon-dialog__btn:focus-visible,
+  .soon-dialog__close:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  @keyframes soon-pop {
+    from { opacity: 0; transform: translateY(14px) scale(0.92); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @keyframes soon-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes soon-ring {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.9); opacity: 0; }
+  }
+
+  @keyframes soon-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-9px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .soon-dialog[open],
+    .soon-dialog[open]::backdrop,
+    .soon-dialog__dot,
+    .soon-dialog__ring {
+      animation: none;
+    }
+  }
 </style>
+
+<script>
+  // Pop up "Segera hadir" untuk TikTok, YouTube, LinkedIn
+  const dialog = document.getElementById('social-soon') as HTMLDialogElement | null;
+
+  if (dialog) {
+    const titleEl = dialog.querySelector<HTMLElement>('#soon-title');
+    const descEl = dialog.querySelector<HTMLElement>('#soon-desc');
+    const iconEl = dialog.querySelector<HTMLElement>('#soon-icon');
+
+    document.querySelectorAll<HTMLButtonElement>('[data-social-soon]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const name = btn.dataset.socialSoon ?? 'Media sosial';
+        if (titleEl) titleEl.textContent = `${name} SAFO segera hadir`;
+        if (descEl) {
+          descEl.textContent = `Kami sedang menyiapkan akun ${name} resmi SAFO. Sementara itu, ikuti keseruan kami lebih dulu di Instagram ya!`;
+        }
+        if (iconEl) iconEl.innerHTML = btn.querySelector('svg')?.outerHTML ?? '';
+        dialog.style.setProperty('--soon-color', btn.dataset.color ?? '');
+        document.body.style.overflow = 'hidden';
+        dialog.showModal();
+      });
+    });
+
+    dialog.querySelectorAll('[data-soon-close]').forEach((el) =>
+      el.addEventListener('click', () => dialog.close())
+    );
+
+    // Klik di luar kartu (backdrop) menutup dialog
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+
+    dialog.addEventListener('close', () => {
+      document.body.style.overflow = '';
+    });
+  }
+</script>

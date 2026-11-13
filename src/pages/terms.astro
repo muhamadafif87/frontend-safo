@@ -1,0 +1,95 @@
+---
+// terms.astro — Syarat & Ketentuan (konten dummy / placeholder)
+import LegalLayout from '../layouts/LegalLayout.astro';
+import site from '../data/site.json';
+
+const sections = [
+  {
+    id: 'penerimaan',
+    heading: 'Penerimaan Syarat',
+    paragraphs: [
+      'Dengan mengakses atau menggunakan situs dan aplikasi SAFO, kamu menyetujui Syarat & Ketentuan ini. Jika tidak setuju, mohon untuk tidak menggunakan layanan kami.',
+    ],
+  },
+  {
+    id: 'layanan',
+    heading: 'Tentang Layanan SAFO',
+    paragraphs: [
+      'SAFO adalah platform yang mempertemukan pembeli dengan UMKM kuliner yang menjual makanan surplus layak konsumsi dengan harga lebih hemat. SAFO bertindak sebagai perantara dan bukan produsen makanan.',
+    ],
+  },
+  {
+    id: 'akun',
+    heading: 'Akun Pengguna',
+    items: [
+      'Kamu wajib memberikan data yang benar dan menjaga kerahasiaan kata sandi.',
+      'Kamu bertanggung jawab atas aktivitas yang terjadi di akunmu.',
+      'Kami dapat menangguhkan akun yang melanggar ketentuan atau disalahgunakan.',
+    ],
+  },
+  {
+    id: 'pemesanan',
+    heading: 'Pemesanan dan Pembayaran',
+    paragraphs: [
+      'Harga dan jumlah porsi yang tampil ditetapkan oleh mitra UMKM dan dapat berubah sewaktu-waktu. Pesanan dianggap sah setelah pembayaran terkonfirmasi.',
+    ],
+  },
+  {
+    id: 'pengambilan',
+    heading: 'Pengambilan Pesanan',
+    paragraphs: [
+      'Makanan diambil langsung di lokasi mitra pada jam pengambilan yang tertera. Tunjukkan kode pesanan kepada mitra. Pesanan yang tidak diambil sampai batas waktu dapat dianggap hangus.',
+    ],
+  },
+  {
+    id: 'mitra',
+    heading: 'Kewajiban Mitra UMKM',
+    items: [
+      'Hanya menjual makanan yang masih layak dan aman dikonsumsi.',
+      'Mencantumkan deskripsi, harga, dan jam pengambilan secara jujur.',
+      'Menyiapkan pesanan sesuai jam pengambilan yang ditetapkan.',
+    ],
+  },
+  {
+    id: 'keamanan-pangan',
+    heading: 'Keamanan Pangan',
+    paragraphs: [
+      'Makanan surplus dijual pada hari yang sama dan sebaiknya segera dikonsumsi. Periksa kondisi makanan saat pengambilan dan laporkan kepada kami jika ada masalah.',
+    ],
+  },
+  {
+    id: 'pembatalan',
+    heading: 'Pembatalan dan Pengembalian Dana',
+    paragraphs: [
+      'Jika pesananmu tidak tersedia atau dibatalkan oleh mitra, dana akan dikembalikan sesuai metode pembayaran yang digunakan. Ketentuan rinci akan dijelaskan pada versi resmi.',
+    ],
+  },
+  {
+    id: 'batasan',
+    heading: 'Batasan Tanggung Jawab',
+    paragraphs: [
+      'Sejauh diizinkan hukum, SAFO tidak bertanggung jawab atas kerugian tidak langsung yang timbul dari penggunaan layanan, termasuk perbedaan kualitas makanan yang dijual mitra.',
+    ],
+  },
+  {
+    id: 'perubahan',
+    heading: 'Perubahan Ketentuan',
+    paragraphs: [
+      'Kami dapat memperbarui ketentuan ini dari waktu ke waktu. Dengan terus menggunakan layanan setelah perubahan berlaku, kamu dianggap menyetujuinya.',
+    ],
+  },
+  {
+    id: 'kontak',
+    heading: 'Hubungi Kami',
+    paragraphs: [`Pertanyaan tentang ketentuan ini dapat dikirim ke ${site.email}.`],
+  },
+];
+---
+
+<LegalLayout
+  eyebrow="Legal"
+  title="Syarat & Ketentuan"
+  description="Syarat dan ketentuan penggunaan layanan SAFO bagi pembeli dan mitra UMKM."
+  updated="November 2026 (draf)"
+  sections={sections}
+/>

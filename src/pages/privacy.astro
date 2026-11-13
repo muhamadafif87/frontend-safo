@@ -1,0 +1,89 @@
+---
+// privacy.astro — Kebijakan Privasi (konten dummy / placeholder)
+import LegalLayout from '../layouts/LegalLayout.astro';
+import site from '../data/site.json';
+
+const sections = [
+  {
+    id: 'pendahuluan',
+    heading: 'Pendahuluan',
+    paragraphs: [
+      'SAFO menghubungkan pembeli dengan UMKM kuliner yang memiliki makanan surplus layak konsumsi. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi data pribadimu saat memakai situs dan aplikasi SAFO.',
+    ],
+  },
+  {
+    id: 'data-yang-dikumpulkan',
+    heading: 'Data yang Kami Kumpulkan',
+    paragraphs: ['Kami hanya mengumpulkan data yang dibutuhkan untuk menjalankan layanan:'],
+    items: [
+      'Data akun: nama, alamat email, dan nomor telepon.',
+      'Data lokasi: perkiraan lokasi untuk menampilkan makanan dan mitra terdekat, hanya bila kamu mengizinkannya.',
+      'Data transaksi: riwayat pesanan, jam pengambilan, dan metode pembayaran (tanpa menyimpan nomor kartu).',
+      'Data penggunaan: halaman yang dikunjungi dan pencarian yang dilakukan, untuk memperbaiki layanan.',
+    ],
+  },
+  {
+    id: 'penggunaan-data',
+    heading: 'Cara Kami Menggunakan Data',
+    items: [
+      'Menampilkan makanan surplus dan mitra di sekitarmu.',
+      'Memproses pesanan dan mengirim notifikasi jam pengambilan.',
+      'Meningkatkan kualitas, keamanan, dan pengalaman penggunaan SAFO.',
+      'Menghitung dampak (misalnya jumlah makanan yang terselamatkan) dalam bentuk agregat.',
+    ],
+  },
+  {
+    id: 'berbagi-data',
+    heading: 'Berbagi Data dengan Pihak Lain',
+    paragraphs: [
+      'Kami membagikan data seperlunya kepada mitra UMKM (misalnya nama dan kode pesanan agar pesananmu dapat disiapkan) dan penyedia layanan pembayaran. Kami tidak menjual data pribadimu kepada pihak ketiga.',
+    ],
+  },
+  {
+    id: 'keamanan',
+    heading: 'Penyimpanan dan Keamanan',
+    paragraphs: [
+      'Data disimpan selama akunmu aktif atau selama diperlukan untuk kewajiban hukum. Kami menerapkan langkah teknis dan organisasi yang wajar untuk melindungi data dari akses yang tidak sah.',
+    ],
+  },
+  {
+    id: 'hak-pengguna',
+    heading: 'Hakmu atas Data',
+    paragraphs: ['Kamu berhak untuk:'],
+    items: [
+      'Mengakses dan memperbarui data pribadimu.',
+      'Meminta penghapusan akun beserta datanya.',
+      'Menarik izin lokasi kapan saja melalui pengaturan perangkat.',
+    ],
+  },
+  {
+    id: 'cookie',
+    heading: 'Cookie dan Teknologi Serupa',
+    paragraphs: [
+      'Kami memakai cookie yang diperlukan agar situs berfungsi dan, bila kamu setuju, cookie analitik untuk memahami bagaimana situs digunakan. Kamu dapat mengatur cookie melalui pengaturan peramban.',
+    ],
+  },
+  {
+    id: 'perubahan',
+    heading: 'Perubahan Kebijakan',
+    paragraphs: [
+      'Kebijakan ini dapat diperbarui dari waktu ke waktu. Perubahan penting akan kami informasikan melalui situs atau email, dan tanggal pembaruan di atas akan disesuaikan.',
+    ],
+  },
+  {
+    id: 'kontak',
+    heading: 'Hubungi Kami',
+    paragraphs: [
+      `Pertanyaan tentang kebijakan ini dapat dikirim ke ${site.email} atau melalui halaman Kontak kami.`,
+    ],
+  },
+];
+---
+
+<LegalLayout
+  eyebrow="Legal"
+  title="Kebijakan Privasi"
+  description="Pelajari bagaimana SAFO mengumpulkan, menggunakan, dan melindungi data pribadimu."
+  updated="November 2026 (draf)"
+  sections={sections}
+/>

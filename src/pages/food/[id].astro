@@ -1,0 +1,374 @@
+---
+// food/[id].astro — Halaman detail makanan surplus (data dummy dari foods.json)
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/layout/Header.astro';
+import Footer from '../../components/layout/Footer.astro';
+import Toast from '../../components/ui/Toast.astro';
+import Button from '../../components/ui/Button.astro';
+import FoodCard from '../../components/food/FoodCard.astro';
+
+import foods from '../../data/foods.json';
+import partners from '../../data/partners.json';
+import categories from '../../data/categories.json';
+
+export function getStaticPaths() {
+  return foods.map((food) => ({ params: { id: food.id }, props: { food } }));
+}
+
+const { food } = Astro.props;
+
+const rupiah = (n: number) => `Rp ${n.toLocaleString('id-ID')}`;
+const categoryLabel = categories.find((c) => c.id === food.category)?.label ?? 'Lainnya';
+const partner = partners.find((p) => p.foodId === food.id);
+const lowStock = food.available <= 3;
+
+// 3 makanan lain terdekat sebagai rekomendasi
+const related = foods
+  .filter((f) => f.id !== food.id)
+  .sort((a, b) => a.distance - b.distance)
+  .slice(0, 3);
+
+const pickupNotes = [
+  'Tunjukkan kode pesanan kepada mitra saat mengambil makanan.',
+  'Ambil sesuai jam pickup — pesanan yang tidak diambil bisa hangus.',
+  'Bawa wadah sendiri bila memungkinkan untuk mengurangi sampah kemasan.',
+];
+---
+
+<BaseLayout
+  title={`${food.name} dari ${food.store} — SAFO`}
+  description={`${food.name} diskon ${food.discount}% dari ${food.store}. ${food.description}`}
+>
+  <Fragment slot="header"><Header /></Fragment>
+
+  <section class="detail section">
+    <div class="container">
+      <nav class="detail__crumbs" aria-label="Breadcrumb">
+        <a href="/#listing">Food Nearby</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{food.name}</span>
+      </nav>
+
+      <div class="detail__grid">
+        <div class="detail__media">
+          <img
+            src={food.image}
+            alt={`${food.name} dari ${food.store}`}
+            width="640"
+            height="480"
+            loading="eager"
+          />
+          <span class="detail__discount" aria-label={`Diskon ${food.discount}%`}>-{food.discount}%</span>
+        </div>
+
+        <div class="detail__info">
+          <p class="detail__store">{food.store} · {categoryLabel}</p>
+          <h1 class="detail__title">{food.name}</h1>
+
+          <p class="detail__rating" aria-label={`Rating ${food.rating} dari 5`}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 1l2.1 4.3 4.7.7-3.4 3.3.8 4.7L8 11.7 3.8 14l.8-4.7L1.2 6l4.7-.7L8 1z"/>
+            </svg>
+            {food.rating}
+          </p>
+
+          <p class="detail__price">
+            <strong>{rupiah(food.price)}</strong>
+            <s>{rupiah(food.originalPrice)}</s>
+          </p>
+
+          <ul class="detail__facts">
+            <li>
+              <span class="detail__fact-label">Jarak</span>
+              <span>{food.distance} km dari lokasimu</span>
+            </li>
+            <li>
+              <span class="detail__fact-label">Jam pickup</span>
+              <span>{food.pickupLabel}</span>
+            </li>
+            <li>
+              <span class="detail__fact-label">Ketersediaan</span>
+              <span class={lowStock ? 'detail__low' : ''}>Sisa {food.available} porsi</span>
+            </li>
+            {partner && (
+              <li>
+                <span class="detail__fact-label">Alamat</span>
+                <span>{partner.address}</span>
+              </li>
+            )}
+          </ul>
+
+          <p class="detail__desc">{food.description}</p>
+
+          <div class="detail__actions">
+            <Button disabled size="lg" aria-describedby="order-note">Pesan di Aplikasi</Button>
+            <Button href="/#listing" variant="secondary" size="lg">Kembali ke daftar</Button>
+          </div>
+          <p class="detail__note" id="order-note">
+            Pemesanan akan tersedia lewat aplikasi SAFO yang segera meluncur.
+          </p>
+        </div>
+      </div>
+
+      <section class="detail__pickup" aria-labelledby="pickup-title">
+        <h2 id="pickup-title">Sebelum mengambil pesanan</h2>
+        <ul>
+          {pickupNotes.map((note) => <li>{note}</li>)}
+        </ul>
+      </section>
+
+      <section class="detail__related" aria-labelledby="related-title">
+        <h2 id="related-title">Makanan lain di sekitarmu</h2>
+        <div class="detail__related-grid">
+          {related.map((item) => (
+            <FoodCard
+              id={item.id}
+              name={item.name}
+              store={item.store}
+              category={item.category}
+              description={item.description}
+              price={item.price}
+              originalPrice={item.originalPrice}
+              discount={item.discount}
+              distance={item.distance}
+              pickupLabel={item.pickupLabel}
+              pickupStart={item.pickupStart}
+              pickupEnd={item.pickupEnd}
+              available={item.available}
+              rating={item.rating}
+              image={item.image}
+              featured={item.featured}
+              compact={true}
+            />
+          ))}
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <Toast />
+  <Fragment slot="footer"><Footer /></Fragment>
+</BaseLayout>
+
+<style>
+  .detail {
+    background: var(--color-bg);
+    padding-block: var(--space-8);
+  }
+
+  @media (min-width: 1024px) {
+    .detail {
+      padding-block: var(--space-12);
+    }
+  }
+
+  .detail__crumbs {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .detail__crumbs a {
+    color: var(--color-primary-700);
+    text-decoration: none;
+  }
+
+  .detail__crumbs a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .detail__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+    margin-bottom: var(--space-12);
+  }
+
+  @media (min-width: 900px) {
+    .detail__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-12);
+      align-items: start;
+    }
+  }
+
+  /* -------- Foto -------- */
+  .detail__media {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--color-border);
+    aspect-ratio: 4 / 3;
+  }
+
+  .detail__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .detail__discount {
+    position: absolute;
+    top: var(--space-4);
+    left: var(--space-4);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: #fff;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--text-sm);
+  }
+
+  /* -------- Info -------- */
+  .detail__info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .detail__store {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .detail__title {
+    font-family: var(--font-display);
+    font-size: clamp(1.9375rem, 4vw, 2.75rem);
+    color: var(--color-ink);
+    line-height: var(--leading-tight);
+  }
+
+  .detail__rating {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-ink);
+  }
+
+  .detail__rating svg {
+    color: #f5b301;
+  }
+
+  .detail__price {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin-top: var(--space-1);
+  }
+
+  .detail__price strong {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    color: var(--color-primary-700);
+  }
+
+  .detail__price s {
+    color: var(--color-ink-muted);
+    font-size: var(--text-base);
+  }
+
+  .detail__facts {
+    list-style: none;
+    margin: var(--space-2) 0;
+    padding: 0;
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+  }
+
+  .detail__facts li {
+    display: flex;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--color-ink);
+  }
+
+  .detail__facts li + li {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .detail__fact-label {
+    flex: none;
+    width: 96px;
+    color: var(--color-ink-muted);
+  }
+
+  .detail__low {
+    color: var(--color-accent-strong);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .detail__desc {
+    max-width: none;
+    color: var(--color-ink-muted);
+    line-height: var(--leading-loose);
+  }
+
+  .detail__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+
+  .detail__note {
+    max-width: none;
+    font-size: var(--text-xs);
+    color: var(--color-ink-muted);
+  }
+
+  /* -------- Catatan pickup & rekomendasi -------- */
+  .detail__pickup {
+    margin-bottom: var(--space-12);
+    padding: var(--space-5) var(--space-6);
+    background: var(--color-primary-100);
+    border-radius: var(--radius-md);
+  }
+
+  .detail__pickup h2,
+  .detail__related h2 {
+    margin-bottom: var(--space-3);
+    font-family: var(--font-body);
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-ink);
+  }
+
+  .detail__pickup ul {
+    margin: 0;
+    padding-left: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    color: var(--color-ink);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+
+  .detail__related-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 640px) {
+    .detail__related-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .detail__related-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>
