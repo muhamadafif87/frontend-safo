@@ -6,6 +6,8 @@ import Header from '../../components/layout/Header.astro';
 import Footer from '../../components/layout/Footer.astro';
 import Toast from '../../components/ui/Toast.astro';
 import Button from '../../components/ui/Button.astro';
+import DemoBadge from '../../components/ui/DemoBadge.astro';
+import site from '../../data/site.json';
 import FoodCard from '../../components/food/FoodCard.astro';
 
 import foods from '../../data/foods.json';
@@ -63,7 +65,10 @@ const pickupNotes = [
         </div>
 
         <div class="detail__info">
-          <p class="detail__store">{food.store} · {categoryLabel}</p>
+          <p class="detail__store">
+            {food.store} · {categoryLabel}
+            {!site.partnersLive && <DemoBadge label="Display" class="detail__demo" />}
+          </p>
           <h1 class="detail__title">{food.name}</h1>
 
           <p class="detail__rating" aria-label={`Rating ${food.rating} dari 5`}>
@@ -107,6 +112,7 @@ const pickupNotes = [
           </div>
           <p class="detail__note" id="order-note">
             Pemesanan akan tersedia lewat aplikasi SAFO yang segera meluncur.
+            {!site.partnersLive && ' Makanan, harga, dan lokasi di halaman ini hanya contoh tampilan — SAFO belum memiliki mitra aktif.'}
           </p>
         </div>
       </div>
@@ -230,6 +236,10 @@ const pickupNotes = [
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
+  }
+
+  .detail__store :global(.detail__demo) {
+    margin-left: var(--space-2);
   }
 
   .detail__store {

@@ -2,6 +2,8 @@
 // BaseLayout.astro — Layout dasar semua halaman SAFO
 // Menangani: <head>, font loading, CSS global, slot Header/Footer
 
+import SoonDialog from '../components/ui/SoonDialog.astro';
+
 interface Props {
   title?: string;
   description?: string;
@@ -83,6 +85,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://safo.id'
     </main>
 
     <slot name="footer" />
+
+    <SoonDialog />
 
     <script is:inline>
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

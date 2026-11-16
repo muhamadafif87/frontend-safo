@@ -3,8 +3,10 @@
 // Dipakai di halaman Impact — data dari impact-stats.json
 
 import impactData from '../../data/impact-stats.json';
+import site from '../../data/site.json';
 
 const { headline } = impactData;
+const live = site.partnersLive;
 
 const stats = [
   headline.foodSaved,
@@ -17,24 +19,31 @@ const stats = [
 <section class="impact-stats" aria-labelledby="impact-stats-title">
   <div class="container">
     <div class="impact-stats__header">
-      <p class="section-label">Dampak Nyata</p>
+      <p class="section-label">{live ? 'Dampak Nyata' : 'Dampak yang Dituju'}</p>
       <h2 class="impact-stats__title" id="impact-stats-title">
         Setiap pembelian punya<br/>dampak yang terukur
       </h2>
       <p class="impact-stats__desc">
-        Angka di bawah ini adalah hasil nyata dari komunitas SAFO —
-        pembeli, UMKM, dan platform bekerja bersama mengurangi food waste.
+        {live
+          ? 'Angka di bawah ini adalah hasil nyata dari komunitas SAFO — pembeli, UMKM, dan platform bekerja bersama mengurangi food waste.'
+          : 'SAFO baru memulai perjalanannya. Angka dampak akan tampil di sini dan dihitung otomatis begitu mitra UMKM pertama bergabung dan transaksi pertama terjadi.'}
       </p>
     </div>
 
     <div class="impact-stats__grid">
       {stats.map((stat, i) => (
         <div class="impact-stats__card reveal reveal--up reveal--staggered" style={`--delay: ${i * 120}ms`}>
-          <span class="impact-stats__num counter" data-target={stat.value} data-suffix={stat.unit}>
-            0
-          </span>
+          {live ? (
+            <span class="impact-stats__num counter" data-target={stat.value} data-suffix={stat.unit}>
+              0
+            </span>
+          ) : (
+            <span class="impact-stats__num impact-stats__num--soon">Segera</span>
+          )}
           <span class="impact-stats__label">{stat.label}</span>
-          <p class="impact-stats__desc-small">{stat.description}</p>
+          <p class="impact-stats__desc-small">
+            {live ? stat.description : 'Mulai dihitung sejak mitra pertama bergabung.'}
+          </p>
         </div>
       ))}
     </div>
@@ -143,5 +152,9 @@ const stats = [
     color: var(--color-ink-muted);
     line-height: var(--leading-normal);
     max-width: none;
+  }
+
+  .impact-stats__num--soon {
+    opacity: 0.55;
   }
 </style>

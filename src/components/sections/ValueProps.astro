@@ -4,6 +4,7 @@
 // Background gelap (primary-900) dari wireframe
 
 import impactData from '../../data/impact-stats.json';
+import site from '../../data/site.json';
 
 const { valueProps } = impactData;
 
@@ -43,8 +44,14 @@ const iconMap: Record<string, string> = {
       />
       <!-- Bubble stats kecil di foto -->
       <div class="value-props__stat-bubble">
-        <span class="value-props__stat-num">2.847</span>
-        <span class="value-props__stat-label">kg makanan<br/>diselamatkan</span>
+        <span class="value-props__stat-num">
+          {site.partnersLive ? impactData.headline.foodSaved.value.toLocaleString('id-ID') : 'Segera'}
+        </span>
+        <span class="value-props__stat-label">
+          {site.partnersLive
+            ? <Fragment>kg makanan<br/>diselamatkan</Fragment>
+            : <Fragment>dampak makanan<br/>mulai dihitung</Fragment>}
+        </span>
       </div>
       <!-- Label handwritten -->
       <div class="value-props__handlabel" aria-hidden="true">

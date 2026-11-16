@@ -8,6 +8,8 @@ import Footer from '../components/layout/Footer.astro';
 import Toast from '../components/ui/Toast.astro';
 
 import impactData from '../data/impact-stats.json';
+import site from '../data/site.json';
+import DemoBadge from '../components/ui/DemoBadge.astro';
 
 const { caseStudies } = impactData;
 
@@ -67,9 +69,9 @@ const registerSteps = [
           Ubah Surplus<br/>Jadi <span class="biz-hero__accent">Pemasukan</span>
         </h1>
         <p class="biz-hero__desc">
-          Bergabunglah dengan 143 UMKM kuliner yang sudah mengurangi food waste
-          dan menambah pemasukan lewat SAFO. Proses pendaftaran mudah,
-          tanpa biaya awal.
+          {site.partnersLive
+            ? 'Bergabunglah dengan 143 UMKM kuliner yang sudah mengurangi food waste dan menambah pemasukan lewat SAFO. Proses pendaftaran mudah, tanpa biaya awal.'
+            : 'Jadilah salah satu mitra pertama SAFO: ubah makanan surplus menjadi pemasukan tambahan dan kurangi food waste. Proses pendaftaran mudah, tanpa biaya awal.'}
         </p>
         <div class="biz-hero__actions">
           <a href="#daftar" class="biz-hero__cta-btn">
@@ -83,8 +85,8 @@ const registerSteps = [
         <!-- Stats mini -->
         <div class="biz-hero__stats">
           <div class="biz-hero__stat">
-            <span class="biz-hero__stat-num">143</span>
-            <span class="biz-hero__stat-label">Mitra aktif</span>
+            <span class="biz-hero__stat-num">{site.partnersLive ? '143' : 'Segera'}</span>
+            <span class="biz-hero__stat-label">{site.partnersLive ? 'Mitra aktif' : 'Mitra pertama'}</span>
           </div>
           <div class="biz-hero__stat-divider" aria-hidden="true"></div>
           <div class="biz-hero__stat">
@@ -140,11 +142,18 @@ const registerSteps = [
   <section class="biz-testimonials section" aria-labelledby="testimonials-title">
     <div class="container">
       <h2 class="biz-testimonials__title" id="testimonials-title">
-        Kata Mitra Kami
+        {site.partnersLive ? 'Kata Mitra Kami' : 'Bayangkan Hasilnya'}
       </h2>
+      {!site.partnersLive && (
+        <p class="biz-testimonials__note">
+          Kutipan di bawah ini adalah <strong>contoh ilustrasi</strong> dari skenario yang ingin dicapai.
+          SAFO belum memiliki mitra aktif — jadilah mitra pertama kami!
+        </p>
+      )}
       <div class="biz-testimonials__grid">
         {caseStudies.map((study) => (
           <blockquote class="biz-testimonial">
+            {!site.partnersLive && <DemoBadge label="Contoh ilustrasi" class="biz-testimonial__demo" />}
             <p class="biz-testimonial__text">"{study.testimonial}"</p>
             <footer class="biz-testimonial__footer">
               <div class="biz-testimonial__avatar" aria-hidden="true">
@@ -489,6 +498,24 @@ const registerSteps = [
   .biz-testimonials {
     background: var(--color-bg);
     border-top: 1px solid var(--color-border);
+  }
+
+  .biz-testimonials__note {
+    max-width: 60ch;
+    margin: 0 0 var(--space-8);
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    color: var(--color-ink);
+    background: var(--color-accent-light);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-sm);
+  }
+
+  .biz-testimonial :global(.biz-testimonial__demo) {
+    align-self: flex-start;
+    width: fit-content;
+    margin-bottom: var(--space-3);
   }
 
   .biz-testimonials__title {

@@ -10,13 +10,15 @@ import CtaBanner from '../components/sections/CtaBanner.astro';
 import Toast from '../components/ui/Toast.astro';
 
 import impactData from '../data/impact-stats.json';
+import site from '../data/site.json';
+import DemoBadge from '../components/ui/DemoBadge.astro';
 
 const { caseStudies } = impactData;
 ---
 
 <BaseLayout
   title="Dampak SAFO — Makanan Terselamatkan, UMKM Terbantu"
-  description="Lihat dampak nyata SAFO: kg makanan terselamatkan, jumlah UMKM terbantu, emisi CO₂ dihindari, dan cerita sukses mitra kami."
+  description="Dampak yang ingin dicapai SAFO: makanan terselamatkan, UMKM terbantu, dan emisi CO₂ yang dihindari."
 >
   <Fragment slot="header"><Header /></Fragment>
 
@@ -24,7 +26,7 @@ const { caseStudies } = impactData;
   <section class="impact-hero section">
     <div class="container impact-hero__inner">
       <div class="impact-hero__content">
-        <p class="section-label">Dampak Nyata</p>
+        <p class="section-label">{site.partnersLive ? 'Dampak Nyata' : 'Dampak yang Dituju'}</p>
         <h1 class="impact-hero__title">
           Setiap Suap<br/>
           <span class="impact-hero__accent">Punya Cerita</span>
@@ -98,15 +100,24 @@ const { caseStudies } = impactData;
   <section class="case-studies section" aria-labelledby="case-title">
     <div class="container">
       <div class="case-studies__header">
-        <p class="section-label">Cerita Mitra</p>
+        <p class="section-label">{site.partnersLive ? 'Cerita Mitra' : 'Ilustrasi Cerita Mitra'}</p>
         <h2 class="case-studies__title" id="case-title">
-          UMKM yang Sudah<br/>Merasakan Manfaatnya
+          {site.partnersLive
+            ? <Fragment>UMKM yang Sudah<br/>Merasakan Manfaatnya</Fragment>
+            : <Fragment>Manfaat yang Bisa<br/>Dirasakan UMKM</Fragment>}
         </h2>
+        {!site.partnersLive && (
+          <p class="case-studies__note">
+            Cerita di bawah ini adalah <strong>contoh ilustrasi</strong> untuk menggambarkan manfaat SAFO.
+            Nama, angka, dan kutipannya bukan dari mitra sungguhan karena SAFO belum memiliki mitra aktif.
+          </p>
+        )}
       </div>
 
       <div class="case-studies__grid">
         {caseStudies.map((study) => (
           <article class="case-card">
+            {!site.partnersLive && <DemoBadge label="Contoh ilustrasi" class="case-card__demo" />}
             <div class="case-card__stats-row">
               <div class="case-card__stat">
                 <span class="case-card__stat-num">{study.monthlyFoodSaved} kg</span>
@@ -150,15 +161,19 @@ const { caseStudies } = impactData;
       <div class="co2-section__content">
         <p class="section-label">Lingkungan</p>
         <h2 class="co2-section__title" id="co2-title">
-          4.271 kg CO₂<br/>Tidak Jadi Terlepas
+          {site.partnersLive
+            ? <Fragment>4.271 kg CO₂<br/>Tidak Jadi Terlepas</Fragment>
+            : <Fragment>Kurangi Emisi dari<br/>Makanan Terbuang</Fragment>}
         </h2>
         <p class="co2-section__desc">
-          Makanan yang terbuang ke TPA menghasilkan gas metana — 25× lebih berbahaya
-          dari CO₂. Dengan mencegah food waste, komunitas SAFO sudah membantu
-          mengurangi emisi setara 4.271 kg CO₂ sejak platform berdiri.
+          {site.partnersLive
+            ? 'Makanan yang terbuang ke TPA menghasilkan gas metana — 25× lebih berbahaya dari CO₂. Dengan mencegah food waste, komunitas SAFO sudah membantu mengurangi emisi setara 4.271 kg CO₂ sejak platform berdiri.'
+            : 'Makanan yang terbuang ke TPA menghasilkan gas metana — 25× lebih berbahaya dari CO₂. Dengan mencegah food waste, SAFO ingin membantu mengurangi emisi dari makanan yang selama ini terbuang.'}
         </p>
         <p class="co2-section__desc">
-          Setara dengan menanam ±142 pohon dewasa selama setahun.
+          {site.partnersLive
+            ? 'Setara dengan menanam ±142 pohon dewasa selama setahun.'
+            : 'Angka emisi yang berhasil dihindari akan ditampilkan di sini begitu transaksi pertama terjadi.'}
         </p>
       </div>
       <div class="co2-section__visual" aria-hidden="true">
@@ -170,9 +185,9 @@ const { caseStudies } = impactData;
             <circle cx="100" cy="100" r="40" fill="var(--color-primary-100)" opacity="0.6"/>
           </svg>
           <div class="co2-circle__text">
-            <span class="co2-circle__num">4.271</span>
-            <span class="co2-circle__unit">kg CO₂</span>
-            <span class="co2-circle__label">dihindari</span>
+            <span class="co2-circle__num">{site.partnersLive ? '4.271' : 'Segera'}</span>
+            <span class="co2-circle__unit">{site.partnersLive ? 'kg CO₂' : 'kg CO₂'}</span>
+            <span class="co2-circle__label">{site.partnersLive ? 'dihindari' : 'akan dihitung'}</span>
           </div>
         </div>
         <div class="co2-trees">
@@ -313,6 +328,23 @@ const { caseStudies } = impactData;
   .case-studies {
     background: var(--color-bg-alt);
     border-top: 1px solid var(--color-border);
+  }
+
+  .case-studies__note {
+    margin-top: var(--space-2);
+    max-width: 56ch;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    color: var(--color-ink);
+    background: var(--color-accent-light);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-sm);
+    text-align: left;
+  }
+
+  .case-card :global(.case-card__demo) {
+    align-self: flex-start;
   }
 
   .case-studies__header {

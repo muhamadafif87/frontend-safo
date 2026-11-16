@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Es kopi susu">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f2e6d6"/><stop offset="1" stop-color="#e6d2b8"/></linearGradient>
+    <linearGradient id="cof" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5c331b"/><stop offset="1" stop-color="#7a4a2a"/></linearGradient>
+    <linearGradient id="milk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9b88f"/><stop offset="1" stop-color="#f7eddc"/></linearGradient>
+    <clipPath id="glass"><path d="M148 62h104l-10 176a14 14 0 0 1-14 13h-56a14 14 0 0 1-14-13z"/></clipPath>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <circle cx="62" cy="62" r="52" fill="#ead8bd" opacity=".75"/><circle cx="346" cy="240" r="58" fill="#e4cfae" opacity=".75"/>
+  <ellipse cx="200" cy="252" rx="78" ry="9" fill="#8b6a45" opacity=".28"/>
+  <!-- sedotan -->
+  <path d="M214 38l22 -10" stroke="#3a8f6a" stroke-width="9" stroke-linecap="round"/>
+  <path d="M232 26L214 130" stroke="#4aa97f" stroke-width="9" stroke-linecap="round"/>
+  <path d="M227 56l-3 18M222 86l-3 18" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".55"/>
+  <!-- gelas -->
+  <path d="M148 62h104l-10 176a14 14 0 0 1-14 13h-56a14 14 0 0 1-14-13z" fill="#fbf7ef" fill-opacity=".55"/>
+  <g clip-path="url(#glass)">
+    <rect x="130" y="176" width="140" height="80" fill="url(#milk)"/>
+    <path d="M130 176c24-14 36 14 60 0s36 14 80-2v-40H130z" fill="url(#cof)" transform="translate(0 -52)"/>
+    <rect x="130" y="82" width="140" height="62" fill="url(#cof)"/>
+    <path d="M130 140c20 20 36-8 56 8s34-10 58 6 26-6 26-6v30H130z" fill="#a4724a" opacity=".85"/>
+    <!-- es batu -->
+    <g fill="#ffffff" fill-opacity=".42" stroke="#ffffff" stroke-opacity=".7" stroke-width="2"><rect x="156" y="86" width="34" height="32" rx="7" transform="rotate(-10 173 102)"/><rect x="208" y="96" width="34" height="32" rx="7" transform="rotate(14 225 112)"/><rect x="176" y="134" width="32" height="30" rx="7" transform="rotate(8 192 149)"/><rect x="214" y="150" width="30" height="30" rx="7" transform="rotate(-14 229 165)"/></g>
+  </g>
+  <path d="M148 62h104l-10 176a14 14 0 0 1-14 13h-56a14 14 0 0 1-14-13z" fill="none" stroke="#ffffff" stroke-width="4" opacity=".9"/>
+  <path d="M148 62h104l-10 176a14 14 0 0 1-14 13h-56a14 14 0 0 1-14-13z" fill="none" stroke="#c9b698" stroke-width="2"/>
+  <path d="M160 74l8 150" stroke="#ffffff" stroke-width="6" stroke-linecap="round" opacity=".55"/>
+  <!-- biji kopi -->
+  <g fill="#3b2113" stroke="#24120a" stroke-width="1.5"><ellipse cx="108" cy="236" rx="13" ry="9" transform="rotate(-24 108 236)"/><ellipse cx="290" cy="238" rx="13" ry="9" transform="rotate(20 290 238)"/><ellipse cx="312" cy="222" rx="11" ry="8" transform="rotate(-10 312 222)"/></g>
+  <g stroke="#7a4a2a" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M98 238c8-6 16-8 22-12" transform="translate(0 -1)"/><path d="M280 241c8-4 16-4 22 0"/><path d="M303 224c6-3 12-3 18-1"/></g>
+</svg>

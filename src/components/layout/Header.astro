@@ -100,13 +100,20 @@ function isActive(href: string) {
         </svg>
       </button>
 
-      <a href="/" class="header__cta-btn" aria-label="Download aplikasi SAFO">
+      <button
+        type="button"
+        class="header__cta-btn"
+        aria-label="Download aplikasi SAFO — segera hadir"
+        aria-haspopup="dialog"
+        data-soon="Aplikasi SAFO"
+        data-soon-kind="download"
+      >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M8 2v8M8 10l-2.5-2.5M8 10l2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
         Download App
-      </a>
+      </button>
 
       <!-- Modal Login -->
       <Modal id="main-login-modal">
@@ -214,13 +221,19 @@ function isActive(href: string) {
       </ul>
 
       <div class="header__drawer-footer">
-        <a href="/" class="header__cta-btn header__cta-btn--full">
+        <button
+          type="button"
+          class="header__cta-btn header__cta-btn--full"
+          aria-haspopup="dialog"
+          data-soon="Aplikasi SAFO"
+          data-soon-kind="download"
+        >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M8 2v8M8 10l-2.5-2.5M8 10l2.5-2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
           Download App
-        </a>
+        </button>
       </div>
     </nav>
   </div>
@@ -581,6 +594,7 @@ function isActive(href: string) {
 
   /* CTA button */
   .header__cta-btn {
+    cursor: pointer;
     display: none;
     align-items: center;
     gap: var(--space-2);
