@@ -5,6 +5,7 @@
 
 import partners from '../../data/partners.json';
 import categories from '../../data/categories.json';
+import site from '../../data/site.json';
 
 interface Props {
   class?: string;
@@ -22,7 +23,7 @@ const data = partners.map((p) => ({
 }));
 ---
 
-<div class={`map-panel ${className}`} data-map data-partners={JSON.stringify(data)}>
+<div class={`map-panel ${className}`} data-map data-partners={JSON.stringify(data)} data-demo={site.partnersLive ? undefined : 'true'}>
   <div
     class="map-panel__map"
     role="region"
@@ -161,6 +162,13 @@ const data = partners.map((p) => ({
     color: var(--color-primary-500);
   }
 
+  .safo-popup .safo-popup__demo {
+    margin: var(--space-2) 0 0;
+    font-size: 11px;
+    font-style: italic;
+    color: var(--color-accent-strong);
+  }
+
   .safo-popup .safo-popup__address {
     display: flex;
     align-items: flex-start;
@@ -241,6 +249,8 @@ const data = partners.map((p) => ({
       .replace(/'/g, '&#39;');
   }
 
+  let demoMode = false;
+
   function popupHtml(p: Partner): string {
     return `
       <div class="safo-popup__head">
@@ -248,7 +258,8 @@ const data = partners.map((p) => ({
         <span class="safo-popup__badge">-${p.discount}%</span>
       </div>
       <p class="safo-popup__category">${escapeHtml(p.categoryLabel)}</p>
-      <p class="safo-popup__address">${ADDRESS_ICON}<span>${escapeHtml(p.address)}</span></p>`;
+      <p class="safo-popup__address">${ADDRESS_ICON}<span>${escapeHtml(p.address)}</span></p>
+      ${demoMode ? '<p class="safo-popup__demo">Lokasi contoh (display)</p>' : ''}`;
   }
 
   function initMap(container: HTMLElement, partners: Partner[]): L.Map & { refit?: () => void } {
@@ -379,6 +390,7 @@ const data = partners.map((p) => ({
     if (!container) return;
 
     const partners: Partner[] = JSON.parse(panel.dataset.partners ?? '[]');
+    demoMode = panel.dataset.demo === 'true';
     let map: (L.Map & { refit?: () => void }) | null = null;
 
     new ResizeObserver(() => {

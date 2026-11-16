@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Nasi ayam geprek dengan sambal dan lalapan">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e8d0"/><stop offset="1" stop-color="#f0d6b2"/></linearGradient>
+    <radialGradient id="chk" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#efb957"/><stop offset="1" stop-color="#c9822b"/></radialGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <circle cx="60" cy="50" r="46" fill="#f1d9b4" opacity=".7"/><circle cx="350" cy="260" r="58" fill="#efd1a6" opacity=".7"/>
+  <ellipse cx="204" cy="162" rx="104" ry="98" fill="#b78a55" opacity=".22"/>
+  <circle cx="200" cy="150" r="100" fill="#ffffff" stroke="#e9dcc6" stroke-width="3"/>
+  <circle cx="200" cy="150" r="82" fill="#fcf8f1" stroke="#efe5d3" stroke-width="2"/>
+  <!-- lalapan: selada -->
+  <path d="M120 98c-14-14 6-34 26-26 10-12 32-4 30 12 12 2 14 18 2 24-10 8-26 6-34-2-8 4-20 0-24-8z" fill="#7dbb4a" stroke="#5d9a32" stroke-width="2"/>
+  <path d="M130 94c14 4 26 2 38-6" stroke="#a9d77c" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- nasi -->
+  <path d="M104 160c-4-26 22-46 50-42 28 2 44 24 38 46-4 18-26 30-48 28-24-2-38-14-40-32z" fill="#fffdf8" stroke="#e8dcc4" stroke-width="2.5"/>
+  <g fill="#e4d6b8"><rect x="128" y="138" width="9" height="3.5" rx="1.7" transform="rotate(20 128 138)"/><rect x="150" y="128" width="9" height="3.5" rx="1.7" transform="rotate(-25 150 128)"/><rect x="166" y="146" width="9" height="3.5" rx="1.7" transform="rotate(35 166 146)"/><rect x="132" y="162" width="9" height="3.5" rx="1.7" transform="rotate(-15 132 162)"/><rect x="158" y="170" width="9" height="3.5" rx="1.7" transform="rotate(25 158 170)"/><rect x="118" y="150" width="9" height="3.5" rx="1.7" transform="rotate(60 118 150)"/><rect x="176" y="164" width="9" height="3.5" rx="1.7" transform="rotate(-40 176 164)"/></g>
+  <!-- ayam geprek -->
+  <path d="M196 120c18-14 52-12 66 4 14 16 8 42-6 54-16 14-46 16-62 2-16-14-14-46 2-60z" fill="url(#chk)" stroke="#a96a1c" stroke-width="2.5"/>
+  <g fill="#a9681b" opacity=".75"><circle cx="214" cy="134" r="3"/><circle cx="236" cy="128" r="2.6"/><circle cx="254" cy="146" r="3"/><circle cx="222" cy="168" r="3"/><circle cx="246" cy="172" r="2.6"/><circle cx="206" cy="152" r="2.4"/><circle cx="262" cy="162" r="2.4"/></g>
+  <g fill="#f7cf7a" opacity=".85"><circle cx="228" cy="140" r="2.2"/><circle cx="244" cy="160" r="2.2"/><circle cx="214" cy="162" r="2"/><circle cx="256" cy="134" r="2"/></g>
+  <!-- sambal -->
+  <path d="M212 146c6-12 28-14 38-4 10 10 4 24-8 28-14 6-36 0-30-24z" fill="#d43f2a" stroke="#a82a1a" stroke-width="2"/>
+  <g fill="#f4cf5c"><ellipse cx="226" cy="150" rx="2.6" ry="1.6"/><ellipse cx="238" cy="158" rx="2.6" ry="1.6"/><ellipse cx="232" cy="142" rx="2.6" ry="1.6"/><ellipse cx="244" cy="148" rx="2.6" ry="1.6"/></g>
+  <circle cx="222" cy="160" r="4" fill="none" stroke="#8e2214" stroke-width="2"/>
+  <!-- timun -->
+  <g><circle cx="150" cy="206" r="14" fill="#d7ecb0" stroke="#7fb446" stroke-width="3"/><circle cx="150" cy="206" r="8" fill="#eaf6cf"/><g fill="#b6d57e"><circle cx="150" cy="202" r="1.5"/><circle cx="146" cy="208" r="1.5"/><circle cx="154" cy="208" r="1.5"/></g></g>
+  <g><circle cx="182" cy="216" r="14" fill="#d7ecb0" stroke="#7fb446" stroke-width="3"/><circle cx="182" cy="216" r="8" fill="#eaf6cf"/><g fill="#b6d57e"><circle cx="182" cy="212" r="1.5"/><circle cx="178" cy="218" r="1.5"/><circle cx="186" cy="218" r="1.5"/></g></g>
+  <!-- tomat -->
+  <path d="M232 204c12-6 30-2 38 10-14 10-34 10-44 0 0-4 2-8 6-10z" fill="#e5483a" stroke="#b92e22" stroke-width="2.5"/>
+  <path d="M238 210c8-3 18-2 26 3" stroke="#f58a7c" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <!-- cabai -->
+  <path d="M262 100c10 8 20 22 26 38" stroke="#c9302a" stroke-width="7" stroke-linecap="round" fill="none"/><path d="M262 100l-6-5" stroke="#4d8a2c" stroke-width="4" stroke-linecap="round"/>
+</svg>

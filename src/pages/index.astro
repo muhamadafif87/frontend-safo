@@ -18,13 +18,21 @@ import Modal from '../components/ui/Modal.astro';
 import categories from '../data/categories.json';
 import foods from '../data/foods.json';
 import partners from '../data/partners.json';
+import site from '../data/site.json';
 
 const maxDiscount = Math.max(...foods.map((f) => f.discount));
-const stats = [
-  { value: String(partners.length), label: 'Mitra di sekitar UNS' },
-  { value: String(foods.length), label: 'Makanan tersedia' },
-  { value: `${maxDiscount}%`, label: 'Diskon tertinggi' },
-];
+const live = site.partnersLive;
+const stats = live
+  ? [
+      { value: String(partners.length), label: 'Mitra di sekitar UNS' },
+      { value: String(foods.length), label: 'Makanan tersedia' },
+      { value: `${maxDiscount}%`, label: 'Diskon tertinggi' },
+    ]
+  : [
+      { value: 'Segera', label: 'Mitra pertama bergabung' },
+      { value: String(foods.length), label: 'Contoh makanan' },
+      { value: `${maxDiscount}%`, label: 'Contoh diskon tertinggi' },
+    ];
 
 const sortOptions = [
   { value: 'nearest', label: 'Terdekat' },
@@ -135,6 +143,19 @@ const filterGroups = [
         </div>
       </div>
 
+      {!live && (
+        <p class="listing__demo-note" role="note">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/>
+            <path d="M8 7.2v4M8 4.7v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <span>
+            <strong>Tampilan contoh (display).</strong> SAFO belum memiliki mitra aktif — makanan,
+            harga, dan lokasi di halaman ini hanya contoh untuk menggambarkan pengalaman aplikasi.
+          </span>
+        </p>
+      )}
+
       <!-- Kontrol: toolbar mobile + filter (satu baris penuh di desktop) -->
       <div class="listing__controls">
         <!-- Bar: pencarian + tombol filter (panel filter tertutup secara default) -->
@@ -230,7 +251,7 @@ const filterGroups = [
           <div class="listing__main">
             <div class="listing__main-header">
               <span class="listing__count" id="food-count" aria-live="polite">
-                Makanan Tersedia (<span id="count-num">{foods.length}</span>)
+                {live ? 'Makanan Tersedia' : 'Contoh Makanan'} (<span id="count-num">{foods.length}</span>)
               </span>
               <div class="listing__sort">
                 <label class="listing__sort-label" for="sort-select">Urutkan</label>
@@ -287,7 +308,7 @@ const filterGroups = [
               </svg>
               Peta Mitra
             </span>
-            <span class="listing__map-hint">Arahkan kursor ke pin untuk lihat diskon</span>
+            <span class="listing__map-hint">{live ? 'Arahkan kursor ke pin untuk lihat diskon' : 'Lokasi contoh (display)'}</span>
           </div>
           <div class="listing__map-desktop" aria-label="Peta lokasi merchant">
             <MapPanel />
@@ -410,6 +431,27 @@ const filterGroups = [
     flex-direction: column;
     justify-content: space-between; /* atas sejajar "Temukan", bawah sejajar baris judul terakhir */
     gap: var(--space-3);
+  }
+
+  .listing__demo-note {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    max-width: none;
+    margin-bottom: var(--space-5);
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    color: var(--color-ink);
+    background: var(--color-accent-light);
+    border-left: 3px solid var(--color-accent);
+    border-radius: var(--radius-sm);
+  }
+
+  .listing__demo-note svg {
+    flex: none;
+    margin-top: 2px;
+    color: var(--color-accent-strong);
   }
 
   .listing__stats {

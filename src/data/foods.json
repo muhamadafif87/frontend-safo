@@ -16,7 +16,7 @@
     "rating": 4.8,
     "lat": -7.5592,
     "lng": 110.8515,
-    "image": "https://images.unsplash.com/photo-1512058556646-c4da40fba323?w=400&q=80",
+    "image": "/foods/nasi-ayam-geprek.svg",
     "featured": true
   },
   {
@@ -36,7 +36,7 @@
     "rating": 4.6,
     "lat": -7.5531,
     "lng": 110.8472,
-    "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",
+    "image": "/foods/roti-cokelat.svg",
     "featured": true
   },
   {
@@ -56,7 +56,7 @@
     "rating": 4.7,
     "lat": -7.5648,
     "lng": 110.8489,
-    "image": "https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400&q=80",
+    "image": "/foods/salad-buah.svg",
     "featured": true
   },
   {
@@ -76,7 +76,7 @@
     "rating": 4.5,
     "lat": -7.5571,
     "lng": 110.8553,
-    "image": "https://images.unsplash.com/photo-1583608205776-bfd35f0d9f83?w=400&q=80",
+    "image": "/foods/tahu-isi.svg",
     "featured": false
   },
   {
@@ -96,7 +96,7 @@
     "rating": 4.9,
     "lat": -7.5609,
     "lng": 110.8501,
-    "image": "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80",
+    "image": "/foods/es-kopi-susu.svg",
     "featured": false
   },
   {
@@ -116,7 +116,7 @@
     "rating": 4.6,
     "lat": -7.5684,
     "lng": 110.8461,
-    "image": "https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400&q=80",
+    "image": "/foods/donat-kentang.svg",
     "featured": false
   }
 ]
